@@ -1,33 +1,23 @@
-# This is a basic workflow to help you get started with Actions
-
 name: CI
 
-# Controls when the action will run. 
 on:
   - push
   - pull_request  
   - workflow_dispatch
 
-# A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
-  # This workflow contains a single job called "build"
-  simple:
-    # The type of runner that the job will run on
+  build:
     runs-on: ubuntu-latest
-
-    # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
-      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v2
       - name: Set up Python 3.8
         uses: actions/setup-python@v2
         with:
           python-version: 3.8
+
       - name: Install dependencies
-        run: |
-          python -m pip install --upgrade pip
-          if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
-          if [ -f requirements_local.txt ]; then pip install -r requirements_local.txt; fi
+        run: make init
+
       - name: Lint code
         run: make lint
         
@@ -43,3 +33,23 @@ jobs:
         run: |
           echo Add other actions to build,
           echo test, and deploy your project.
+
+  sam-build:
+    runs-on: ubuntu-20.04
+    container: aws-sam-cli-build-image-python3.8
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up Python 3.8
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.8
+
+      - name: Install dependencies
+        run: make init
+      
+      - name: Test 
+        run: make test
+
+      - name : Build SAM Stack
+        run: make build-stack
+      
