@@ -31,8 +31,8 @@ debug-local: ## build and invoke the lambda function in debug mode
 	sam local invoke --parameter-overrides 'KeyPairName=MyKey LOCAL_ENV=true'  -e ./events/process_document_event.json -d
 
 
-build-stack: ## build the stack in a CI environemnt using AWS SAM
-	@echo "TODO...."
+build-stack: ## builds the application (docker images)
+	sam build
 
 deploy-stack: ## deploy the stack using AWS SAM
 	@echo "TODO...."
