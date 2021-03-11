@@ -14,7 +14,6 @@ jobs:
     container: amazon/aws-sam-cli-build-image-python3.8:latest
 
     steps:
-    - name: Setup python 3.8
     - uses: actions/checkout@v2
     - uses: actions/setup-python@v2
       with:
