@@ -38,5 +38,5 @@ def lambda_handler(event, context):
         return 'Success'
 
     except Exception as e:
-        logger.error("Error processing object {} from bucket {}. Event {} Error: {}".format(key, bucket, json.dumps(event, indent=2),  e))
+        logger.error("Error processing object {} from bucket {}. Event {} Error: {}".format(object_key, bucket, json.dumps(event, indent=2),  e))
         raise e
