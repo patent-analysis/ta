@@ -7,7 +7,7 @@ on:
   pull_request:
     branches:
       - main
-
+# PSV-6 Adding the deployment pipeline
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -18,7 +18,7 @@ jobs:
     - uses: actions/setup-python@v2
       with:
         python-version: '3.8'
-    - run: |
+      run: |
         echo "building"
 
 
