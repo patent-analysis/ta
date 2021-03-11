@@ -36,7 +36,7 @@ jobs:
 
   sam-build:
     runs-on: ubuntu-20.04
-    container: aws-sam-cli-build-image-python3.8
+    container: public.ecr.aws/sam/build-python3.7:latest
     steps:
       - uses: actions/checkout@v2
       - name: Set up Python 3.8
