@@ -1,0 +1,21 @@
+version: '3.2'
+
+services:
+  localstack:
+    container_name: "${LOCALSTACK_DOCKER_NAME-localstack_main}"
+    image: localstack/localstack
+    networks: 
+      - host_network
+    ports:
+      - "4566:4566"
+      - "4571:4571"
+    environment:
+      - SERVICES=iam,lambda,s3
+      - DEBUG=1
+    volumes:
+      - "./.tmp:/tmp/localstack"
+      - "/var/run/docker.sock:/var/run/docker.sock"
+networks:
+  host_network:
+    external: true
+    name: host_net

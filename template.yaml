@@ -1,0 +1,58 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: 'AWS::Serverless-2016-10-31'
+
+Description: Patent Text Analysis Pipeline serverless stack to mining patent pdf documents. 
+  The pipeline will be triggered when a document is added to the s3 bucket that is being watched by the ProcessPatentDocumentsFunc function.
+
+Parameters:
+  Tag:
+    Type: String
+    Default: latest
+    Description: Docker tag to build and deploy.
+  LOCAL_ENV:
+    Type: Boolean
+    Default: false
+    Description: Run local env.
+
+Resources:
+  ProcessPatentDocumentsFunc:
+    Type: 'AWS::Serverless::Function'
+    Properties:
+      Handler: src/app.lambda_handler
+      Runtime: python3.8
+      CodeUri: .
+      Description: Text mining task triggered whenever a patent document is uploaded to the S3 bucket.
+      MemorySize: 1024
+      Timeout: 30
+      PackageType: Image
+      Environment:
+        Variables:
+          BUCKET_NAME:
+            Ref: SourceBucket
+          LOCAL_ENV: 
+            Ref: LOCAL_ENV
+
+      Policies:
+        - Version: '2012-10-17'
+          Statement:
+            - Effect: Allow
+              Action:
+                - 's3:GetObject'
+              Resource: 'arn:aws:s3:::*'
+      Events:
+        BucketEvent1:
+          Type: S3
+          Properties:
+            Bucket:
+              Ref: SourceBucket
+            Events:
+              - 's3:ObjectCreated:*'
+    Metadata:
+      Dockerfile: Dockerfile
+      DockerContext: ./src/process_documents
+  
+  SourceBucket:
+    Type: 'AWS::S3::Bucket'
+    Properties:
+      BucketName: psv-doc-storage
+      AccessControl: private
