@@ -6,7 +6,7 @@ import pytest
 
 mock_event_file = os.path.join(os.path.abspath(os.path.dirname(__file__)), '../events/mock_event.json')
 mock_event_data = open(mock_event_file)
-mock_event = json.load(mock_event_data) 
+mock_event = json.load(mock_event_data)
 
 MOCK_BUCKET_NAME = 'mock-bucket'
 MOCK_OBJECT_NAME = 'mock-patent.pdf'
