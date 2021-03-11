@@ -35,20 +35,19 @@ jobs:
 
   sam-build:
     runs-on: ubuntu-20.04
-    container: public.ecr.aws/sam/build-python3.8:latest
     steps:
       - uses: actions/checkout@v2
       - name: Set up Python 3.8
-        uses: actions/setup-python@v2
+        uses: youyo/aws-sam-action/python3.8@v2
         with:
-          python-version: 3.8
-
-      - name: Install dependencies
-        run: make init
+          sam_command: "build"
+        
+      # - name: Install dependencies
+      # - run: make init
       
-      - name: Test 
-        run: make test
+      # - name: Test 
+      #   run: make test
 
-      - name : Build SAM Stack
-        run: make build-stack
+      # - name : Build SAM Stack
+      #   run: make build-stack
       

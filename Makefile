@@ -6,7 +6,7 @@ help:
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}'
 
 init: 	## install the requirments
-	@python -m pip install --upgrade pip         
+	python -m pip install --upgrade pip     
 	@if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
 	@if [ -f requirements_local.txt ]; then pip install -r requirements_local.txt; fi
 
