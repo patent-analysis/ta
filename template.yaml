@@ -23,7 +23,7 @@ Resources:
       CodeUri: .
       Description: Text mining task triggered whenever a patent document is uploaded to the S3 bucket.
       MemorySize: 1024
-      Timeout: 30
+      Timeout: 600
       PackageType: Image
       Environment:
         Variables:

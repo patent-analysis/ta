@@ -15,15 +15,22 @@ jobs:
         run: make init
       - name: Lint code
         run: make lint
-      - name: SAM build
-        uses: youyo/aws-sam-action/python3.8@v2
-        with:
-          sam_command: "build"
       - name: Unit Tests
         run: make test
-      - name: Integration Tests
-        working-directory: ${{ github.workspace }}
-        run: make run-ci
+      
+      # I am going to comment-out the integration tests because
+      # installing the local aws stack takes a long time and 
+      # burns through our CI quota quickly
+      # - name: SAM build
+      #   uses: youyo/aws-sam-action/python3.8@v2
+      #   with:
+      #     sam_command: "build"
+      # - name: Start Local Stack
+      #   working-directory: ${{ github.workspace }}
+      #   run: make stack-up
+      # - name: Integration Tests
+      #   working-directory: ${{ github.workspace }}
+      #   run: make run-ci
 
   deploy:
     runs-on: ubuntu-latest
