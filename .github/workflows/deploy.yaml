@@ -1,0 +1,34 @@
+name: Deploy Workflow
+
+on:
+  pull_request:
+    types: [closed]
+    branches: [master]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    if: github.event.pull_request.merged
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up Python 3.8
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.8
+
+      - name: Install dependencies
+        run: make init
+
+      - name: SAM build
+        uses: youyo/aws-sam-action/python3.8@v2
+        with:
+          sam_command: "build"
+      
+      - name: SAM Deploy
+        uses: youyo/aws-sam-action/python3.8@v2
+        with:
+          sam_command: "deploy"
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          AWS_DEFAULT_REGION: us-east-1
