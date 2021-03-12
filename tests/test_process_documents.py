@@ -4,12 +4,15 @@ import boto3
 from moto import mock_s3
 import pytest
 
-mock_event_file = os.path.join(os.path.abspath(os.path.dirname(__file__)), '../events/mock_event.json')
+mock_event_file = os.path.join(
+    os.path.abspath(os.path.dirname(__file__)),
+    '../events/mock_event.json')
 mock_event_data = open(mock_event_file)
-mock_event = json.load(mock_event_data) 
+mock_event = json.load(mock_event_data)
 
 MOCK_BUCKET_NAME = 'mock-bucket'
 MOCK_OBJECT_NAME = 'mock-patent.pdf'
+
 
 @pytest.fixture(scope='function')
 def aws_credentials():
@@ -26,7 +29,7 @@ def s3(aws_credentials):
     s3 bucket and yields a fake boto3 s3 client
     """
     with mock_s3():
-        s3 = boto3.client("s3",region_name='us-east-1')
+        s3 = boto3.client("s3", region_name='us-east-1')
         s3.create_bucket(Bucket=MOCK_BUCKET_NAME)
         yield s3
 
