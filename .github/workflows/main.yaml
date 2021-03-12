@@ -41,6 +41,7 @@ jobs:
     runs-on: ubuntu-latest
     if: github.event.pull_request.merged
     needs: build
+    environment: AWS_US_EAST_1_1
     steps:
       - uses: actions/checkout@v2
       - name: Set up Python 3.8
