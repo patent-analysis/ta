@@ -59,7 +59,7 @@ jobs:
       - name: SAM Deploy
         uses: youyo/aws-sam-action/python3.8@v2
         with:
-          sam_command: "deploy --stack-name psv-stack --debug --image-repository ta-repository"
+          sam_command: "deploy --stack-name psv-stack --debug --image-repository 147427553671.dkr.ecr.us-east-1.amazonaws.com/ta-repository"
           actions_comment: true
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
