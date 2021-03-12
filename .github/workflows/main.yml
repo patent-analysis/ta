@@ -15,8 +15,10 @@ jobs:
         run: make init
       - name: Lint code
         run: make lint
-      - name: Build Container
-        run: make build
+      - name: SAM build
+        uses: youyo/aws-sam-action/python3.8@v2
+        with:
+          sam_command: "build"
       - name: Unit Tests
         run: make test
       - name: Integration Tests
