@@ -23,11 +23,14 @@ stack-up: ## run the local aws stack environment
 stack-down: ## stop the local aws stack environment
 	cd ./localstack; docker-compose down
 
-run-local: ## build and invoke the lambda function
+run-local: ## build and invoke the lambda function locally
 	@echo "cleaning all stale docker images and containers...."
 	docker image prune -f
 	docker container prune -f
 	sam build
+	sam local invoke --parameter-overrides 'KeyPairName=MyKey LOCAL_ENV=true'  -e ./events/process_document_event.json
+
+run-ci: ## build and invoke the lambda function in the ci environment
 	sam local invoke --parameter-overrides 'KeyPairName=MyKey LOCAL_ENV=true'  -e ./events/process_document_event.json
 
 debug-local: ## build and invoke the lambda function in debug mode

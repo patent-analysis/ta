@@ -23,7 +23,7 @@ jobs:
         run: make test
       - name: Integration Tests
         working-directory: ${{ github.workspace }}
-        run: make run-local
+        run: make run-ci
 
   deploy:
     runs-on: ubuntu-latest
