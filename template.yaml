@@ -69,7 +69,7 @@ ECRRepo: # the ECR repo name
           Effect: Allow
           Principal: 
             AWS: 
-              - "arn:aws:iam::${AWS::Region}:${AWS::AccountId}:user/*"
+              - "arn:aws:iam::${AWS::Region}:${AWS::AccountId}:user/psv_app"
           Action: 
             - "ecr:GetDownloadUrlForLayer"
             - "ecr:BatchGetImage"
