@@ -78,3 +78,4 @@ ECRRepo: # the ECR repo name
             - "ecr:InitiateLayerUpload"
             - "ecr:UploadLayerPart"
             - "ecr:CompleteLayerUpload"
+            - "ecr:GetAuthorizationToken"
