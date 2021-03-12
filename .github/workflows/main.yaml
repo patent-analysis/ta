@@ -1,0 +1,70 @@
+name: Build
+
+on: [ push , pull_request , workflow_dispatch]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up Python 3.8
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.8
+      - name: Install dependencies
+        run: make init
+      - name: Lint code
+        run: make lint
+      - name: Unit Tests
+        run: make test
+      
+      # I am going to comment-out the integration tests because
+      # installing the local aws stack takes a long time and 
+      # burns through our CI quota quickly
+      # - name: SAM build
+      #   uses: youyo/aws-sam-action/python3.8@v2
+      #   with:
+      #     sam_command: "build"
+      # - name: Start Local Stack
+      #   working-directory: ${{ github.workspace }}
+      #   run: make stack-up
+      # - name: Integration Tests
+      #   working-directory: ${{ github.workspace }}
+      #   run: make run-ci
+
+---
+
+name: Deploy Workflow
+
+on:
+  pull_request:
+    types: [closed]
+    branches: [master]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    if: github.event.pull_request.merged
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up Python 3.8
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.8
+
+      - name: Install dependencies
+        run: make init
+
+      - name: SAM build
+        uses: youyo/aws-sam-action/python3.8@v2
+        with:
+          sam_command: "build"
+      
+      - name: SAM Deploy
+        uses: youyo/aws-sam-action/python3.8@v2
+        with:
+          sam_command: "deploy"
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          AWS_DEFAULT_REGION: us-east-1
