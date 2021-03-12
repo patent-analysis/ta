@@ -54,12 +54,12 @@ jobs:
       - name: SAM build
         uses: youyo/aws-sam-action/python3.8@v2
         with:
-          sam_command: "build"
+          sam_command: "build --cached --parallel"
          
       - name: SAM Deploy
         uses: youyo/aws-sam-action/python3.8@v2
         with:
-          sam_command: "deploy --stack-name psv-stack --debug"
+          sam_command: "deploy --stack-name psv-stack --debug --image-repository ta-repository"
           actions_comment: true
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
