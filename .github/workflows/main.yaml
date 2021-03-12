@@ -55,12 +55,14 @@ jobs:
         uses: youyo/aws-sam-action/python3.8@v2
         with:
           sam_command: "build"
-      
+         
       - name: SAM Deploy
         uses: youyo/aws-sam-action/python3.8@v2
         with:
-          sam_command: "deploy"
+          sam_command: "deploy --stack-name psv-stack --debug"
+          actions_comment: true
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           AWS_DEFAULT_REGION: us-east-1
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
