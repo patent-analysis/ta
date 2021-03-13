@@ -1,5 +1,5 @@
 # Patent Text Analysis Pipeline
-[![.github/workflows/main.yaml](https://github.com/patent-analysis/ta/actions/workflows/push_workflow.yaml/badge.svg)](https://github.com/patent-analysis/ta/actions/workflows/push_workflow.yaml)
+[![.github/workflows/main.yaml](https://github.com/patent-analysis/ta/actions/workflows/main.yaml/badge.svg)](https://github.com/patent-analysis/ta/actions/workflows/main.yaml)
 This is a serverless stack that will be triggered to mine the patent pdf documents once they are uploaded to the storage S3 bucket.
 
 
