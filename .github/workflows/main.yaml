@@ -64,6 +64,7 @@ jobs:
         with:
           name: ta-stack
           template: stack-template.yaml
+          parameter-overrides: "no-fail-on-empty-changeset=1"
       - name: SAM build
         uses: youyo/aws-sam-action/python3.8@v2
         with:
