@@ -28,16 +28,16 @@ run-local: ## build and invoke the lambda function locally
 	docker image prune -f
 	docker container prune -f
 	sam build
-	sam local invoke --parameter-overrides 'KeyPairName=MyKey LOCAL_ENV=true'  -e ./events/process_document_event.json
+	sam local invoke --parameter-overrides 'KeyPairName=MyKey LocalEnv=true'  -e ./events/process_document_event.json
 
 run-ci: ## build and invoke the lambda function in the ci environment
-	sam local invoke --parameter-overrides 'KeyPairName=MyKey LOCAL_ENV=true'  -e ./events/process_document_event.json
+	sam local invoke --parameter-overrides 'KeyPairName=MyKey LocalEnv=true'  -e ./events/process_document_event.json
 
 debug-local: ## build and invoke the lambda function in debug mode
 	docker image prune -f
 	docker container prune -f
 	sam build
-	sam local invoke --parameter-overrides 'KeyPairName=MyKey LOCAL_ENV=true'  -e ./events/process_document_event.json -d
+	sam local invoke --parameter-overrides 'KeyPairName=MyKey LocalEnv=true'  -e ./events/process_document_event.json -d
 
 
 build-stack: ## builds the application (docker images)
