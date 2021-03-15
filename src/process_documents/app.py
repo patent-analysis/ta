@@ -9,7 +9,7 @@ logger.setLevel(logging.INFO)
 
 
 #  local env
-if os.getenv('LOCAL_ENV'):
+if os.getenv('LocalEnv'):
     s3_client = boto3.client(service_name='s3', endpoint_url=LOCAL_STACK_URL)
 else:
     s3_client = boto3.client('s3')

@@ -9,7 +9,7 @@ Parameters:
     Type: String
     Default: latest
     Description: Docker tag to build and deploy.
-  LOCAL_ENV:
+  LocalEnv:
     Type: Boolean
     Default: false
     Description: Run local env.
@@ -30,8 +30,8 @@ Resources:
         Variables:
           BUCKET_NAME:
             Ref: SourceBucket
-          LOCAL_ENV: 
-            Ref: LOCAL_ENV
+          LocalEnv: 
+            Ref: LocalEnv
 
       Policies:
         - Version: '2012-10-17'
