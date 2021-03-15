@@ -69,6 +69,9 @@ jobs:
         uses: youyo/aws-sam-action/python3.8@v2
         with:
           sam_command: "build --cached --parallel"
+      - name: check sam
+        run: sam --version && python --version && echo "should be able to continue without the use statements" 
+
       - name: SAM package
         uses: youyo/aws-sam-action/python3.8@v2
         with:

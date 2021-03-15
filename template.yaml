@@ -55,3 +55,4 @@ Resources:
     Type: 'AWS::S3::Bucket'
     Properties:
       BucketName: psv-document-storage
+      AccessControl: BucketOwnerFullControl
