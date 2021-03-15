@@ -59,11 +59,11 @@ jobs:
       - name: SAM package
         uses: youyo/aws-sam-action/python3.8@v2
         with:
-          sam_command: "package --output-template-file packaged-template.yaml --debug --image-repository 147427553671.dkr.ecr.us-east-1.amazonaws.com/ta-repository"      
+          sam_command: "package --output-template-file packaged-template.yaml --debug --image-repository 147427553671.dkr.ecr.us-east-1.amazonaws.com/ta-repository --s3-bucket ta-sam-template"      
       - name: SAM deploy
         uses: youyo/aws-sam-action/python3.8@v2
         with:
-          sam_command: "deploy -t packaged-template.yaml --stack-name psv-stack --region us-east-1 --debug --image-repository 147427553671.dkr.ecr.us-east-1.amazonaws.com/ta-repository"
+          sam_command: "deploy -t packaged-template.yaml --stack-name psv-stack --region us-east-1 --debug --image-repository 147427553671.dkr.ecr.us-east-1.amazonaws.com/ta-repository --s3-bucket ta-sam-template"
           actions_comment: true
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
