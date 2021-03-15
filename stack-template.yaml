@@ -1,18 +1,6 @@
 AWSTemplateFormatVersion: '2010-09-09'
-Transform: 'AWS::Serverless-2016-10-31'
 
-Description: Patent Text Analysis Pipeline serverless stack to mining patent pdf documents. 
-  The pipeline will be triggered when a document is added to the s3 bucket that is being watched by the ProcessPatentDocuments function.
-
-Parameters:
-  Tag:
-    Type: String
-    Default: latest
-    Description: Docker tag to build and deploy.
-  LOCAL_ENV:
-    Type: Boolean
-    Default: false
-    Description: Run local env.
+Description: Cloudformation Template.
 
 Resources:
   TaRepo: # the ECR repo name
