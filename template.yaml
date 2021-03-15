@@ -25,7 +25,7 @@ Resources:
       MemorySize: 1024
       Timeout: 600
       PackageType: Image
-      ImageUrl: !Join ['.', [!Ref AWS::AccountId, 'dkr.ecr', !Ref AWS::Region, 'amazonaws.com/', !Ref TaRepo]]
+      ImageUri: !Join ['.', [!Ref AWS::AccountId, 'dkr.ecr', !Ref AWS::Region, 'amazonaws.com/', !Ref TaRepo]]
       Environment:
         Variables:
           BUCKET_NAME:
