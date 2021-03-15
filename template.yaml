@@ -2,7 +2,7 @@ AWSTemplateFormatVersion: '2010-09-09'
 Transform: 'AWS::Serverless-2016-10-31'
 
 Description: Patent Text Analysis Pipeline serverless stack to mining patent pdf documents. 
-  The pipeline will be triggered when a document is added to the s3 bucket that is being watched by the ProcessPatentDocumentsFunc function.
+  The pipeline will be triggered when a document is added to the s3 bucket that is being watched by the ProcessPatentDocuments function.
 
 Parameters:
   Tag:
@@ -15,7 +15,7 @@ Parameters:
     Description: Run local env.
 
 Resources:
-  ProcessPatentDocumentsFunc:
+  ProcessPatentDocuments:
     Type: 'AWS::Serverless::Function'
     Properties:
       Handler: src/app.lambda_handler
@@ -25,6 +25,7 @@ Resources:
       MemorySize: 1024
       Timeout: 600
       PackageType: Image
+      ImageUrl: !Join ['.', [!Ref AWS::AccountId, 'dkr.ecr', !Ref AWS::Region, 'amazonaws.com/', !Ref TaRepo]]
       Environment:
         Variables:
           BUCKET_NAME:
@@ -57,7 +58,7 @@ Resources:
       BucketName: psv-doc-storage
       AccessControl: private
 
-ECRRepo: # the ECR repo name
+TaRepo: # the ECR repo name
   Type: AWS::ECR::Repository
   Properties: 
     RepositoryName: "ta-repository"
