@@ -18,8 +18,8 @@ Resources:
   ProcessPatentDocuments:
     Type: 'AWS::Serverless::Function'
     Properties:
-      Handler: src/app.lambda_handler
-      Runtime: python3.8
+      # Handler: src/app.lambda_handler
+      # Runtime: python3.8
       CodeUri: .
       Description: Text mining task triggered whenever a patent document is uploaded to the S3 bucket.
       MemorySize: 1024
