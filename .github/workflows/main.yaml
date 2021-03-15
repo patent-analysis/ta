@@ -76,5 +76,7 @@ jobs:
       - name: SAM deploy
         uses: youyo/aws-sam-action/python3.8@v2
         with:
-          sam_command: "deploy -t packaged-template.yaml --stack-name ta-serverless-stack --region us-east-1 --debug --image-repository 147427553671.dkr.ecr.us-east-1.amazonaws.com/ta-repository --s3-bucket ta-stack-bucket --capabilities CAPABILITY_IAM"
+          sam_command: "deploy -t packaged-template.yaml --stack-name ta-serverless-stack --region us-east-1 --debug --image-repository 147427553671.dkr.ecr.us-east-1.amazonaws.com/ta-repository --s3-bucket ta-stack-bucket --capabilities CAPABILITY_IAM --on-failure DELETE --no-fail-on-empty-changeset"
           actions_comment: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
