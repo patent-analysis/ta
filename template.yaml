@@ -10,8 +10,8 @@ Parameters:
     Default: latest
     Description: Docker tag to build and deploy.
   LocalEnv:
-    Type: Boolean
-    Default: false
+    Type: String
+    Default: "false"
     Description: Run local env.
 
 Resources:
