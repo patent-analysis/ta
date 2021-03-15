@@ -15,7 +15,7 @@ Resources:
             Effect: Allow
             Principal: 
               AWS: 
-                - "arn:aws:iam::us-east-1:147427553671:user/psv_app"
+                - "arn:aws:iam::147427553671:user/psv_app"
             Action: 
               - "ecr:GetDownloadUrlForLayer"
               - "ecr:BatchGetImage"
