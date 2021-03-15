@@ -3,7 +3,7 @@ AWSTemplateFormatVersion: '2010-09-09'
 Description: Cloudformation resource template.
 
 Resources:
-  TaRepo:
+  TaRepo: # repo holding the ta serverless container image
     Type: AWS::ECR::Repository
     Properties: 
       RepositoryName: "ta-repository"
@@ -25,3 +25,9 @@ Resources:
               - "ecr:UploadLayerPart"
               - "ecr:CompleteLayerUpload"
               - "ecr:GetAuthorizationToken"
+  TaStackS3Bucket: # bucket holding the serverless template file
+    Type: AWS::S3:Bucket 
+    Properties:
+      BucketName: ta-stack-bucket
+      AccessControl: BucketOwnerFullControl
+
