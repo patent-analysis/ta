@@ -15,49 +15,6 @@ Parameters:
     Description: Run local env.
 
 Resources:
-  ProcessPatentDocuments:
-    Type: 'AWS::Serverless::Function'
-    Properties:
-      Handler: src/app.lambda_handler
-      Runtime: python3.8
-      CodeUri: .
-      Description: Text mining task triggered whenever a patent document is uploaded to the S3 bucket.
-      MemorySize: 1024
-      Timeout: 600
-      PackageType: Image
-      ImageUri: !Join ['.', [!Ref AWS::AccountId, 'dkr.ecr', !Ref AWS::Region, 'amazonaws.com/', !Ref TaRepo]]
-      Environment:
-        Variables:
-          BUCKET_NAME:
-            Ref: SourceBucket
-          LOCAL_ENV: 
-            Ref: LOCAL_ENV
-
-      Policies:
-        - Version: '2012-10-17'
-          Statement:
-            - Effect: Allow
-              Action:
-                - 's3:GetObject'
-              Resource: 'arn:aws:s3:::*'
-      Events:
-        BucketEvent1:
-          Type: S3
-          Properties:
-            Bucket:
-              Ref: SourceBucket
-            Events:
-              - 's3:ObjectCreated:*'
-    Metadata:
-      Dockerfile: Dockerfile
-      DockerContext: ./src/process_documents
-  
-  SourceBucket:
-    Type: 'AWS::S3::Bucket'
-    Properties:
-      BucketName: psv-doc-storage
-      AccessControl: private
-
   TaRepo: # the ECR repo name
     Type: AWS::ECR::Repository
     Properties: 
