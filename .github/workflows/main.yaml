@@ -56,8 +56,6 @@ jobs:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: us-east-1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Cloudformation deploy
         uses: aws-actions/aws-cloudformation-github-deploy@v1
         with:
@@ -77,3 +75,5 @@ jobs:
         with:
           sam_command: "deploy -t packaged-template.yaml --stack-name ta-serverless-stack --region us-east-1 --debug --image-repository 147427553671.dkr.ecr.us-east-1.amazonaws.com/ta-repository --s3-bucket ta-stack-bucket --capabilities CAPABILITY_IAM  --no-fail-on-empty-changeset"
           actions_comment: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
