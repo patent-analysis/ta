@@ -46,6 +46,7 @@ After installing all the prerequisites, you should be able to install the test r
 
 ```bash
 make init
+make test
 ```
 
 ### Start a mock aws environment locally
@@ -74,7 +75,10 @@ make debug-local
 ```
 
 ### Build the stack
-TODO
+This is done in the CI pipeline using the command `sam build` && `sam package`
 
 ### Deploy the stack
-TODO
+This is done in the CI pipeline via the command `sam deploy`
+
+### Infrastructure
+This is done in the CI pipeline via the command `sam deploy`
