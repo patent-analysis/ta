@@ -2,7 +2,8 @@ name: CI Workflow
 
 on:
   push:
-      branches: [main]
+      branches: 
+        - '*'
   pull_request:
       types: [closed, opened]
   workflow_dispatch:
