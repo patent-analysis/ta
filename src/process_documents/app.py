@@ -3,10 +3,14 @@ import json
 import urllib
 import os
 import logging
-LOCAL_STACK_URL = 'http://192.168.0.1:4566'
+import textract
+import PyPDF2
+import re
+import io
+LOCAL_STACK_URL = 'http://host.docker.internal:4566' # mac specific setting, windows look elsewhere
+DOC_NUMBER_REGEX = '((US|us)\s?([,|\/|\s|\d|&])+\s?([a-zA-Z]\d))'
 logger = logging.getLogger()
 logger.setLevel(logging.INFO)
-
 
 #  local env
 if os.getenv('LocalEnv'):
@@ -14,14 +18,46 @@ if os.getenv('LocalEnv'):
 else:
     s3_client = boto3.client('s3')
 
+# TODO: add client for patents S3 bucket
+s3_patent_client = None #boto3.client('')
+
+def extract_first_page(pdf_object, pdf_file_path):
+    # convert byte array to stream object for pdf
+    with io.BytesIO(pdf_object) as pdf:
+        reader = PyPDF2.PdfFileReader(pdf)
+        # extract first page and save
+        page = reader.getPage(0)
+        page_writer = PyPDF2.PdfFileWriter()
+        page_writer.addPage(page)
+        with open(pdf_file_path, "wb") as writer_stream:
+            page_writer.write(writer_stream)
+
+
+def extract_patent_id(pdf_file_path):
+    # extract patent id
+    scanned_text = textract.process(pdf_file_path, method='tesseract').decode('utf-8')
+    raw_patent_id = re.search(DOC_NUMBER_REGEX, scanned_text).group(1)
+    raw_patent_id = re.sub('[us|US|,|&|\s|/]', '',raw_patent_id).strip('0')
+    patent_id = re.sub('\w\d$', '', raw_patent_id)
+    return patent_id
+
 
 def parse_doc_text(bucket, key):
+    
     logger.info("Downloading and processing document {}".format(key))
-    # s3_object =
-    s3_client.get_object(Bucket=bucket, Key=key)
-    # TODO: IMPLEMENT THE TEXT MINING STEPS HERE
+    # grab pdf object from s3 bucket
+    s3_object = s3_client.get_object(Bucket=bucket, Key=key)
+    pdf_object = s3_object['Body'].read()
     logger.info("Downloaded s3 object {}".format(key))
-    return ["text1", "text2"]
+
+    # Write the first page to the tmp dir (to save time)
+    extract_first_page(pdf_object, key)
+
+    # extract patent id from first page
+    patent_id = extract_patent_id(key)
+    
+    #s3_patent_object = s3_patent_client.get_object(Bucket=bucket, Key=patent_id)
+    return ''#s3_patent_object['Body'].read()
 
 
 def lambda_handler(event, context):

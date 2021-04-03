@@ -2,3 +2,5 @@ pytest
 moto
 boto3
 flake8
+textract
+PyPDF2
