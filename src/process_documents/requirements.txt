@@ -4,3 +4,4 @@ boto3
 flake8
 textract
 PyPDF2
+requests

@@ -15,5 +15,6 @@ RUN python3.8 -m pip install -r requirements.txt -t .
 ADD "https://www.random.org/cgi-bin/randbyte?nbytes=10&format=h" skipcache
 
 COPY app.py ./
+COPY patent.py ./
 
 CMD ["app.lambda_handler"]
