@@ -10,38 +10,25 @@ import io
 import requests
 import json
 from patent import Patent
+from collections import Counter
 
 LOCAL_STACK_URL = 'http://host.docker.internal:4566' # mac specific setting, windows look elsewhere
 DOC_NUMBER_REGEX = '((US|us)\s?([,|\/|\s|\d|&])+\s?([a-zA-Z]\d))'
+PAT_ID_PATTERN = "US\s?\d*[A-B][0-9]"
 BASE_URL = 'https://uspto-documents-storage.s3.amazonaws.com/docs/'
+FULL_PDF_PATH = 'full_pdf_temp.pdf'
+FIRST_PAGE_PATH = 'page_one_pdf_temp.pdf'
+
+doc_num_matcher = re.compile(DOC_NUMBER_REGEX)
 logger = logging.getLogger()
 logger.setLevel(logging.INFO)
+
 
 #  local env
 if os.getenv('LocalEnv'):
     s3_client = boto3.client(service_name='s3', endpoint_url=LOCAL_STACK_URL)
 else:
     s3_client = boto3.client('s3')
-
-
-def extract_first_page(pdf_object, pdf_file_path):
-    # convert byte array to stream object for pdf
-    with io.BytesIO(pdf_object) as pdf:
-        reader = PyPDF2.PdfFileReader(pdf)
-        # extract first page and save
-        page = reader.getPage(0)
-        page_writer = PyPDF2.PdfFileWriter()
-        page_writer.addPage(page)
-        with open(pdf_file_path, "wb") as writer_stream:
-            page_writer.write(writer_stream)
-
-
-def extract_patent_id(pdf_file_path):
-    # extract patent id
-    scanned_text = textract.process(pdf_file_path, method='tesseract').decode('utf-8')
-    raw_patent_id = re.search(DOC_NUMBER_REGEX, scanned_text).group(1)
-    patent_id = re.sub('[,|&|\s|/]', '',raw_patent_id).strip('0')
-    return patent_id
 
 
 def fetch_patent_data(patent_id):
@@ -57,18 +44,45 @@ def fetch_patent_data(patent_id):
         return None    
 
 
+def extract_first_page():
+    reader = PyPDF2.PdfFileReader(FULL_PDF_PATH)
+    # extract first page and save
+    page = reader.getPage(0)
+    page_writer = PyPDF2.PdfFileWriter()
+    page_writer.addPage(page)
+    with open(FIRST_PAGE_PATH, "wb") as writer_stream:
+        page_writer.write(writer_stream)
+
+
+def extract_patent_id():
+    parsed_text = textract.process(FULL_PDF_PATH).decode('utf-8')
+    if parsed_text.startswith('\x0c\x0c\x0c'):
+        extract_first_page()
+        parsed_text = textract.process(FIRST_PAGE_PATH, method='tesseract').decode('utf-8')
+
+    pat_num_matches = doc_num_matcher.findall(parsed_text)
+    pat_num_count = Counter(pat_num_matches)
+    raw_pat_id = pat_num_count.most_common(1)[0]
+
+    while (isinstance(raw_pat_id, tuple)):
+        raw_pat_id = raw_pat_id[0]
+
+    # extract patent id
+    patent_id = re.sub('[,|&|\s|/]', '',raw_pat_id).strip('0')
+    return patent_id
+
+
 def parse_doc_text(bucket, key):
     logger.info("Downloading and processing document {}".format(key))
     # grab pdf object from s3 bucket
     s3_object = s3_client.get_object(Bucket=bucket, Key=key)
     pdf_object = s3_object['Body'].read()
+    with open(FULL_PDF_PATH, 'wb') as f:
+        f.write(pdf_object)
     logger.info("Downloaded s3 object {}".format(key))
 
-    # Write the first page to the tmp dir (to save time)
-    extract_first_page(pdf_object, key)
-
     # extract patent id from first page
-    patent_id = extract_patent_id(key)
+    patent_id = extract_patent_id()
     
     return fetch_patent_data(patent_id)
 
@@ -90,7 +104,9 @@ def lambda_handler(event, context):
             logger.error('unable to fetch patent data')
             return 'Failure'
         else:
-            logger.info(json.dumps(response.__dict__))
+            for field in response.__dict__:
+                if field != 'description':
+                    logger.info(field + ':' + str(response.__dict__[field]))
             return 'Success'
 
     except Exception as e:
