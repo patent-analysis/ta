@@ -31,7 +31,7 @@ def persist_patent_record_to_db(response):
     biomolecules_table = dynamodb.Table('bioMolecules-dev')
 
     # Extract patent data from the response and persist to patents_table
-    # TODO: REPLACE 'dummy' VALUES BELOW WITH THE CURRENT LOGIC TO EXTRACT FROM response
+    # TODO: REPLACE 'dummy' VALUES BELOW WITH THE CORRECT LOGIC TO EXTRACT THE VALUES FROM response
     patents_table.put_item(
         Item={
             'patentNumber': 'dummy',
@@ -54,7 +54,7 @@ def persist_patent_record_to_db(response):
     )
 
     # Extract biomolecule data from the response and persist to biomolecules_table
-    # TODO: REPLACE 'dummy' VALUES BELOW WITH THE CURRENT LOGIC TO EXTRACT FROM response AND
+    # TODO: REPLACE 'dummy' VALUES BELOW WITH THE CORRECT LOGIC TO EXTRACT THE VALUES FROM response AND
     #  ADD ADDITIONAL KEYS AS NEEDED
     biomolecules_table.put_item(
         Item={
