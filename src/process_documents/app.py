@@ -24,6 +24,46 @@ def parse_doc_text(bucket, key):
     return ["text1", "text2"]
 
 
+def persist_patent_record_to_db(response):
+    dynamodb = boto3.resource('dynamodb')
+
+    patents_table = dynamodb.Table('patents-dev')
+    biomolecules_table = dynamodb.Table('bioMolecules-dev')
+
+    # Extract patent data from the response and persist to patents_table
+    # TODO: REPLACE 'dummy' VALUES BELOW WITH THE CURRENT LOGIC TO EXTRACT FROM response
+    patents_table.put_item(
+        Item={
+            'patentNumber': 'dummy',
+            'patentName': 'dummy',
+            'proteinId': 'dummy',
+            'claimedResidues': 'dummy',
+            'applicants': 'dummy',
+            'patentAssignees': 'dummy',
+            'inventors': 'dummy',
+            'examiners': 'dummy',
+            'legalStatus': 'dummy',
+            'appNumber': 'dummy',
+            'appDate': 'dummy',
+            'claimsCount': 'dummy',
+            'sequenceCount': 'dummy',
+            'patentFileDate': 'dummy',
+            'createdDate': 'dummy',
+            'patentDocPath': 'dummy'
+        }
+    )
+
+    # Extract biomolecule data from the response and persist to biomolecules_table
+    # TODO: REPLACE 'dummy' VALUES BELOW WITH THE CURRENT LOGIC TO EXTRACT FROM response AND
+    #  ADD ADDITIONAL KEYS AS NEEDED
+    biomolecules_table.put_item(
+        Item={
+            'name': 'dummy',
+            'sequence': 'dummy'
+        }
+    )
+
+
 def lambda_handler(event, context):
     '''
     Handles newly uploaded pattent pdf docs.
@@ -38,6 +78,9 @@ def lambda_handler(event, context):
         response = parse_doc_text(bucket, object_key)
         logger.info("Done handling event")
         logger.debug(response)
+
+        persist_patent_record_to_db(response)
+
         return 'Success'
 
     except Exception as e:
