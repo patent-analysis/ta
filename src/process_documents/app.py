@@ -7,12 +7,13 @@ LOCAL_STACK_URL = 'http://192.168.0.1:4566'
 logger = logging.getLogger()
 logger.setLevel(logging.INFO)
 
-
 #  local env
 if os.getenv('LocalEnv'):
-    s3_client = boto3.client(service_name='s3', endpoint_url=LOCAL_STACK_URL)
+    s3_client = boto3.client(service_name='s3', endpoint_url=LOCAL_STACK_URL, region_name='us-east-1')
+    dynamodb = boto3.client(service_name='dynamodb', endpoint_url=LOCAL_STACK_URL, region_name='us-east-1')
 else:
-    s3_client = boto3.client('s3')
+    s3_client = boto3.client('s3', region_name='us-east-1')
+    dynamodb = boto3.resource('dynamodb', region_name='us-east-1')
 
 
 def parse_doc_text(bucket, key):
@@ -25,8 +26,6 @@ def parse_doc_text(bucket, key):
 
 
 def persist_patent_record_to_db(response):
-    dynamodb = boto3.resource('dynamodb')
-
     patents_table = dynamodb.Table('patents-dev')
     biomolecules_table = dynamodb.Table('bioMolecules-dev')
 
