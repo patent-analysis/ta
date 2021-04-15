@@ -144,7 +144,7 @@ def lambda_handler(event, context):
 
         if patent and seq_listing:
             logger.info("Patent Name: " + patent.patentName)
-            logger.info("SeqListing count: " + seq_listing.seqCount)
+            logger.info("SeqListing count: " + str(seq_listing.seqCount))
             persist_patent_record_to_db(patent, seq_listing)
             return result
         else:

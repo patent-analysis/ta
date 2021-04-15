@@ -64,63 +64,63 @@ class Patent:
         
         #Claimed as string
         for claimed in lines:
-			#Find the required sentence with epitope info
-			sentenceToEvaluate = ''
-			for regex in bindingPattern:
-				if re.findall(regex, claimed):
-					sentenceToEvaluate = re.findall(regex, claimed)
-			
-			#If pattern not found - return
-			if not sentenceToEvaluate:
-				next(lines, None)
-				continue
-			
-			sequencesDict = dict.fromkeys(keysForSequences)
-			sentenceToEvaluate = ','.join(str(v) for v in sentenceToEvaluate)
-			
-			#Extract Seq ID
-			extractedSeqID = ''.join(sentenceToEvaluate)
-			if re.search(r'\bresidues\b', extractedSeqID):
-				extractedSeqID = extractedSeqID.split("SEQ ID NO:")[1].split(".")[0].strip()
-				extractedSeqID = extractedSeqID.split(",")[0].strip()
-			else:
-				extractedSeqID = extractedSeqID.split("(SEQ ID NO:")[1].split(").")[0].strip()
+            #Find the required sentence with epitope info
+            sentenceToEvaluate = ''
+            for regex in bindingPattern:
+                if re.findall(regex, claimed):
+                    sentenceToEvaluate = re.findall(regex, claimed)
+            
+            #If pattern not found - return
+            if not sentenceToEvaluate:
+                next(lines, None)
+                continue
+            
+            sequencesDict = dict.fromkeys(keysForSequences)
+            sentenceToEvaluate = ','.join(str(v) for v in sentenceToEvaluate)
+            
+            #Extract Seq ID
+            extractedSeqID = ''.join(sentenceToEvaluate)
+            if re.search(r'\bresidues\b', extractedSeqID):
+                extractedSeqID = extractedSeqID.split("SEQ ID NO:")[1].split(".")[0].strip()
+                extractedSeqID = extractedSeqID.split(",")[0].strip()
+            else:
+                extractedSeqID = extractedSeqID.split("(SEQ ID NO:")[1].split(").")[0].strip()
 
-			listings = extractedSeqID.split()
-			for l in listings:
-				if l.isdigit():
-					sequencesDict["seqNoId"] = l
-			
-			sequencesDict["values"] = []
-			
-			#Extract string with residues info
-			extractedString = ''.join(sentenceToEvaluate)
-			if re.search(r'\bresidues\b', extractedString):
-				extractedString = extractedString.split("residues")[1].split("SEQ ID")[0]
-			else:
-				extractedString = extractedString.split("residue")[1].split("SEQ ID")[0]
-			words = extractedString.split()
-			for i in words:
-				i = i.replace(',','')
-				#if punctuation
-				if i in string.punctuation:
-					i = i.replace(':','')
-				#if range of sequences
-				elif i.find("-") != -1:
-					rangeList = i.split("-")
-					for n in range(int(rangeList[0]), int(rangeList[-1]) + 1):
-						valuesDict = dict.fromkeys(keysForValues)
-						valuesDict["num"] = int(n)
-						sequencesDict["values"].append(valuesDict)
-				#if mix of letters and digits
-				elif (i.isalpha() == False) and (i.isdigit() == False) and (len(i) < 5 ):
-					i = i[1:]
-					valuesDict = dict.fromkeys(keysForValues)
-					valuesDict["num"] = int(i)
-					sequencesDict["values"].append(valuesDict)
-				#if digital
-				elif i.isdigit():
-					valuesDict = dict.fromkeys(keysForValues)
-					valuesDict["num"] = int(i)
-					sequencesDict["values"].append(valuesDict)
-			self.claimedResidues.append(sequencesDict)
+            listings = extractedSeqID.split()
+            for l in listings:
+                if l.isdigit():
+                    sequencesDict["seqNoId"] = l
+            
+            sequencesDict["values"] = []
+            
+            #Extract string with residues info
+            extractedString = ''.join(sentenceToEvaluate)
+            if re.search(r'\bresidues\b', extractedString):
+                extractedString = extractedString.split("residues")[1].split("SEQ ID")[0]
+            else:
+                extractedString = extractedString.split("residue")[1].split("SEQ ID")[0]
+            words = extractedString.split()
+            for i in words:
+                i = i.replace(',','')
+                #if punctuation
+                if i in string.punctuation:
+                    i = i.replace(':','')
+                #if range of sequences
+                elif i.find("-") != -1:
+                    rangeList = i.split("-")
+                    for n in range(int(rangeList[0]), int(rangeList[-1]) + 1):
+                        valuesDict = dict.fromkeys(keysForValues)
+                        valuesDict["num"] = int(n)
+                        sequencesDict["values"].append(valuesDict)
+                #if mix of letters and digits
+                elif (i.isalpha() == False) and (i.isdigit() == False) and (len(i) < 5 ):
+                    i = i[1:]
+                    valuesDict = dict.fromkeys(keysForValues)
+                    valuesDict["num"] = int(i)
+                    sequencesDict["values"].append(valuesDict)
+                #if digital
+                elif i.isdigit():
+                    valuesDict = dict.fromkeys(keysForValues)
+                    valuesDict["num"] = int(i)
+                    sequencesDict["values"].append(valuesDict)
+            self.claimedResidues.append(sequencesDict)
