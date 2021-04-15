@@ -14,11 +14,9 @@ from collections import Counter
 
 LOCAL_STACK_URL = 'http://host.docker.internal:4566' # mac specific setting, windows should use localhost
 DOC_NUMBER_REGEX = '((US|us)\s?([,|\/|\s|\d|&])+\s?([a-zA-Z]\d))'
-PAT_ID_PATTERN = "US\s?\d*[A-B][0-9]"
 PATENT_BASE_URL = 'https://uspto-documents-storage.s3.amazonaws.com/docs/'
 LISTINGS_BASE_URL = 'https://uspto-documents-storage.s3.amazonaws.com/seq/'
 FULL_PDF_PATH = 'full_pdf_temp.pdf'
-FIRST_PAGE_PATH = 'page_one_pdf_temp.pdf'
 TMP_IMAGE_PATH = 'img_temp.png'
 
 doc_num_matcher = re.compile(DOC_NUMBER_REGEX)
@@ -92,42 +90,40 @@ def parse_doc_text(bucket, key):
     return patent, seq_listing
 
 
-def persist_patent_record_to_db(response):
+def persist_patent_record_to_db(patent, seq_listing):
     dynamodb = boto3.resource('dynamodb')
 
     patents_table = dynamodb.Table('patents-dev')
     biomolecules_table = dynamodb.Table('bioMolecules-dev')
 
     # Extract patent data from the response and persist to patents_table
-    # TODO: REPLACE 'dummy' VALUES BELOW WITH THE CORRECT LOGIC TO EXTRACT THE VALUES FROM response
     patents_table.put_item(
         Item={
-            'patentNumber': 'dummy',
-            'patentName': 'dummy',
-            'proteinId': 'dummy',
-            'claimedResidues': 'dummy',
-            'applicants': 'dummy',
-            'patentAssignees': 'dummy',
-            'inventors': 'dummy',
-            'examiners': 'dummy',
-            'legalStatus': 'dummy',
-            'appNumber': 'dummy',
-            'appDate': 'dummy',
-            'claimsCount': 'dummy',
-            'sequenceCount': 'dummy',
-            'patentFileDate': 'dummy',
-            'createdDate': 'dummy',
-            'patentDocPath': 'dummy'
+            'patentNumber': patent.patentNumber,
+            'patentName': patent.patentName,
+            'proteinId': '',
+            'claimedResidues': patent.claimedResidues,
+            'applicants': ' '.join(patent.applicants),
+            'patentAssignees': ' '.join(patent.patentAssignees),
+            'inventors': ' '.join(patent.inventors),
+            'examiners': patent.examiners,
+            'legalStatus': '',
+            'appNumber': patent.appNumber,
+            'appDate': patent.appDate,
+            'claimsCount': patent.claimsCount,
+            'sequenceCount': '',
+            'patentFileDate': '',
+            'createdDate': '',
+            'patentDocPath': ''
         }
     )
 
     # Extract biomolecule data from the response and persist to biomolecules_table
-    # TODO: REPLACE 'dummy' VALUES BELOW WITH THE CORRECT LOGIC TO EXTRACT THE VALUES FROM response AND
     #  ADD ADDITIONAL KEYS AS NEEDED
     biomolecules_table.put_item(
         Item={
-            'name': 'dummy',
-            'sequence': 'dummy'
+            'name': seq_listing.patentNumber,
+            'sequence':  seq_listing.sequences
         }
     )
 
@@ -145,12 +141,12 @@ def lambda_handler(event, context):
     try:
         patent, seq_listing = parse_doc_text(bucket, object_key)
         logger.info("Done handling event")
-<<<<<<< HEAD
         result = 'Success'
 
         if patent and seq_listing:
             logger.info("Patent Name: " + patent.patentName)
             logger.info("SeqListing count: " + seq_listing.seqCount)
+            persist_patent_record_to_db(patent, seq_listing)
             return result
         else:
             result = ''
@@ -159,16 +155,9 @@ def lambda_handler(event, context):
             logger.error('unable to fetch patent data')
             result += 'Patent Failure'
         if seq_listing == None:
-            logger.error('unable to fetch patent data')
+            logger.error('unable to fetch seq_listing data')
             result += ' SeqListing Failure'
         return result.lstrip()
-=======
-        logger.debug(response)
-
-        persist_patent_record_to_db(response)
-
-        return 'Success'
->>>>>>> 5464476c25cca053a395a0a3f3f7853ad60c464c
 
     except Exception as e:
         logger.error("Error processing key {} Event {} Error: {}".format(
