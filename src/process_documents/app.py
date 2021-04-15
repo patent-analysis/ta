@@ -8,8 +8,8 @@ import re
 import requests
 import json
 import fitz
-from patent import Patent
-from seqlisting import SeqListing
+from .patent import Patent
+from .seqlisting import SeqListing
 from collections import Counter
 
 LOCAL_STACK_URL = 'http://host.docker.internal:4566' # mac specific setting, windows should use localhost
