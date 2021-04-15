@@ -16,5 +16,6 @@ ADD "https://www.random.org/cgi-bin/randbyte?nbytes=10&format=h" skipcache
 
 COPY app.py ./
 COPY patent.py ./
+COPY seqlisting.py ./
 
 CMD ["app.lambda_handler"]
