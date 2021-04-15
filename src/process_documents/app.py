@@ -23,12 +23,13 @@ doc_num_matcher = re.compile(DOC_NUMBER_REGEX)
 logger = logging.getLogger()
 logger.setLevel(logging.INFO)
 
-
 #  local env
 if os.getenv('LocalEnv'):
-    s3_client = boto3.client(service_name='s3', endpoint_url=LOCAL_STACK_URL)
+    s3_client = boto3.client(service_name='s3', endpoint_url=LOCAL_STACK_URL, region_name='us-east-1')
+    dynamodb = boto3.client(service_name='dynamodb', endpoint_url=LOCAL_STACK_URL, region_name='us-east-1')
 else:
-    s3_client = boto3.client('s3')
+    s3_client = boto3.client('s3', region_name='us-east-1')
+    dynamodb = boto3.resource('dynamodb', region_name='us-east-1')
 
 
 def fetch_seq_listing(patent_id):
@@ -91,8 +92,6 @@ def parse_doc_text(bucket, key):
 
 
 def persist_patent_record_to_db(patent, seq_listing):
-    dynamodb = boto3.resource('dynamodb')
-
     patents_table = dynamodb.Table('patents-dev')
     biomolecules_table = dynamodb.Table('bioMolecules-dev')
 
