@@ -54,5 +54,4 @@ def test_handle_event(s3, mocker):
 class MockResponse:
     def __init__(self):
         self.status_code = 200
-        f = open('./US8829165B2.xml', "r")
-        self.content = f.read()
+        self.content = ""
