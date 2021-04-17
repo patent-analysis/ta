@@ -13,7 +13,7 @@ from .seqlisting import SeqListing
 from collections import Counter
 
 LOCAL_STACK_URL = 'http://host.docker.internal:4566' # mac specific setting, windows should use localhost
-DOC_NUMBER_REGEX = '((US|us)\s?([,|\/|\s|\d|&])+\s?([a-zA-Z]\d))'
+DOC_NUMBER_REGEX = '((US|us)\\s?([,|\\/|\\s|\\d|&])+\\s?([a-zA-Z]\\d))'
 PATENT_BASE_URL = 'https://uspto-documents-storage.s3.amazonaws.com/docs/'
 LISTINGS_BASE_URL = 'https://uspto-documents-storage.s3.amazonaws.com/seq/'
 FULL_PDF_PATH = 'full_pdf_temp.pdf'
@@ -41,7 +41,7 @@ def fetch_seq_listing(patent_id):
     if response.status_code == 200:
         with open(listing_path, 'wb') as f:
             f.write(response.content)
-        return SeqListing(patent_id)
+            return SeqListing(patent_id)
     else:
         return None
 
@@ -69,7 +69,7 @@ def extract_patent_id():
 
     # extract patent id
     raw_pat_id = re.search(DOC_NUMBER_REGEX, parsed_text).group(0)
-    patent_id = re.sub('[,|&|\s|/]', '',raw_pat_id).strip('0')
+    patent_id = re.sub('[,|&|\\s|/]', '',raw_pat_id).strip('0')
     return patent_id
 
 
@@ -141,7 +141,6 @@ def lambda_handler(event, context):
         patent, seq_listing = parse_doc_text(bucket, object_key)
         logger.info("Done handling event")
         result = 'Success'
-
         if patent and seq_listing:
             logger.info("Patent Name: " + patent.patentName)
             logger.info("SeqListing count: " + str(seq_listing.seqCount))
