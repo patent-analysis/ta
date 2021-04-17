@@ -16,12 +16,14 @@ Parameters:
 
 Resources:
   ProcessPatentDocuments:
+    Handler: ./src/process_documents/app.lambdaHandler
     Type: 'AWS::Serverless::Function'
+    Timeout: 900
     Properties:
       CodeUri: ./
       Description: Text mining task triggered whenever a patent document is uploaded to the S3 bucket.
       MemorySize: 1024
-      Timeout: 600
+      Timeout: 900
       PackageType: Image
       ImageUri: !Join ['.', [!Ref AWS::AccountId, 'dkr.ecr', !Ref AWS::Region, 'amazonaws.com/', !Ref TaRepo]]
       Environment:
