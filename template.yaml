@@ -18,7 +18,7 @@ Resources:
   ProcessPatentDocuments:
     Type: 'AWS::Serverless::Function'
     Properties:
-      CodeUri: ./src/process_documents
+      CodeUri: ./
       Description: Text mining task triggered whenever a patent document is uploaded to the S3 bucket.
       MemorySize: 1024
       Timeout: 600
