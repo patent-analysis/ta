@@ -4,6 +4,7 @@ import boto3
 from moto import mock_s3, mock_dynamodb2
 import pytest
 
+
 mock_event_file = os.path.join(
     os.path.abspath(os.path.dirname(__file__)),
     '../events/mock_event.json')
@@ -33,38 +34,24 @@ def s3(aws_credentials):
         s3.create_bucket(Bucket=MOCK_BUCKET_NAME)
         yield s3
 
-@pytest.fixture()
-def dynamodb(aws_credentials):
-    """Pytest fixture which creates a mock
-    dynamodb database and yields a fake boto3 dynamodb client
-    """
-    with mock_dynamodb2():
-        dynamodb = boto3.client('dynamodb', region_name='us-east-1')
-        dynamodb.create_table(TableName='patents-dev',
-        KeySchema=[
-            {
-                'AttributeName': 'patentNumber',
-                'KeyType': 'HASH'  # Partition key
-            }],  AttributeDefinitions=[
-            {
-                'AttributeName': 'patentNumber',
-                'AttributeType': 'N'
-            }])
-        dynamodb.create_table(TableName='bioMolecules-dev',
-        KeySchema=[
-            {
-                'AttributeName': 'name',
-                'KeyType': 'HASH'  # Partition key
-            }],  AttributeDefinitions=[
-            {
-                'AttributeName': 'name',
-                'AttributeType': 'N'
-            }])
-        yield dynamodb
+def test_handle_event(s3, mocker):
+    mocker.patch('src.process_documents.app.fitz.open')
+    mocker.patch('builtins.open')
+    mocker.patch('os.path.exists')
+    mocker.patch('src.process_documents.app.requests.get', return_value= MockResponse())
+    mocker.patch('src.process_documents.app.SeqListing')
+    mocker.patch('src.process_documents.app.Patent')
+    mocker.patch('src.process_documents.app.dynamodb')
+    mocker.patch('src.process_documents.app.textract.process', return_value=str.encode("US800023421B2"))
 
-
-def test_handle_event(s3, dynamodb):
     from src.process_documents import app
     s3.put_object(Bucket=MOCK_BUCKET_NAME, Key=MOCK_OBJECT_NAME, Body="")
     handler_resp = app.lambda_handler(mock_event, context={})
     assert handler_resp == 'Success'
+
+
+
+class MockResponse:
+    def __init__(self):
+        self.status_code = 200
+        self.content = ""
