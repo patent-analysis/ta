@@ -17,7 +17,8 @@ DOC_NUMBER_REGEX = '((US|us)\\s?([,|\\/|\\s|\\d|&])+\\s?([a-zA-Z]\\d))'
 PATENT_BASE_URL = 'https://uspto-documents-storage.s3.amazonaws.com/docs/'
 LISTINGS_BASE_URL = 'https://uspto-documents-storage.s3.amazonaws.com/seq/'
 FULL_PDF_PATH = '/tmp/'
-TMP_IMAGE_PATH = 'img_temp.png'
+TMP_IMAGE_PATH = '/tmp/'
+
 
 doc_num_matcher = re.compile(DOC_NUMBER_REGEX)
 logger = logging.getLogger()
@@ -60,12 +61,12 @@ def fetch_patent_data(patent_id):
         return None    
 
 
-def extract_patent_id(file_path):
-    doc = fitz.open(file_path)
+def extract_patent_id(key):
+    doc = fitz.open(FULL_PDF_PATH + key)
     page = doc.loadPage(0)
     pix = page.getPixmap(matrix=fitz.Matrix(5, 5))
-    pix.writePNG(TMP_IMAGE_PATH)
-    parsed_text = textract.process(TMP_IMAGE_PATH, method='tesseract').decode('utf-8')
+    pix.writePNG(TMP_IMAGE_PATH + key.replace('pdf', 'png'))
+    parsed_text = textract.process(TMP_IMAGE_PATH + key.replace('pdf', 'png'), method='tesseract').decode('utf-8')
 
     # extract patent id
     raw_pat_id = re.search(DOC_NUMBER_REGEX, parsed_text).group(0)
@@ -83,7 +84,7 @@ def parse_doc_text(bucket, key):
     logger.info("Downloaded s3 object {}".format(key))
 
     # extract patent id from first page
-    patent_id = extract_patent_id(FULL_PDF_PATH + key)
+    patent_id = extract_patent_id(key)
 
     # extract and return patent metadata and sequence listing
     patent = fetch_patent_data(patent_id)
