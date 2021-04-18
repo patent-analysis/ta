@@ -2,11 +2,11 @@ FROM amazon/aws-lambda-python:3.8
 
 COPY . ./
 
-RUN yum -y install poppler-utils flac swig tesseract
+RUN yum -y install poppler-utils flac swig
 
-# RUN rpm -Uvh https://dl.fedoraproject.org/pub/epel/epel-release-latest-8.noarch.rpm
-# RUN yum -y update
-# RUN yum -y install tesseract
+RUN rpm -Uvh https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm
+RUN yum -y update
+RUN yum -y install tesseract
 
 RUN pip install --upgrade pip
 
