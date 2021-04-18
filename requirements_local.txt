@@ -4,3 +4,4 @@ flake8
 textract
 requests
 pytest-mock
+PyMuPDF
