@@ -16,7 +16,7 @@ LOCAL_STACK_URL = 'http://host.docker.internal:4566' # mac specific setting, win
 DOC_NUMBER_REGEX = '((US|us)\\s?([,|\\/|\\s|\\d|&])+\\s?([a-zA-Z]\\d))'
 PATENT_BASE_URL = 'https://uspto-documents-storage.s3.amazonaws.com/docs/'
 LISTINGS_BASE_URL = 'https://uspto-documents-storage.s3.amazonaws.com/seq/'
-FULL_PDF_PATH = 'full_pdf_temp.pdf'
+FULL_PDF_PATH = '/tmp/'
 TMP_IMAGE_PATH = 'img_temp.png'
 
 doc_num_matcher = re.compile(DOC_NUMBER_REGEX)
@@ -60,8 +60,8 @@ def fetch_patent_data(patent_id):
         return None    
 
 
-def extract_patent_id():
-    doc = fitz.open(FULL_PDF_PATH)
+def extract_patent_id(file_path):
+    doc = fitz.open(file_path)
     page = doc.loadPage(0)
     pix = page.getPixmap(matrix=fitz.Matrix(5, 5))
     pix.writePNG(TMP_IMAGE_PATH)
@@ -78,12 +78,12 @@ def parse_doc_text(bucket, key):
     # grab pdf object from s3 bucket
     s3_object = s3_client.get_object(Bucket=bucket, Key=key)
     pdf_object = s3_object['Body'].read()
-    with open(FULL_PDF_PATH, 'wb') as f:
+    with open(FULL_PDF_PATH + key, 'wb') as f:
         f.write(pdf_object)
     logger.info("Downloaded s3 object {}".format(key))
 
     # extract patent id from first page
-    patent_id = extract_patent_id()
+    patent_id = extract_patent_id(FULL_PDF_PATH + key)
 
     # extract and return patent metadata and sequence listing
     patent = fetch_patent_data(patent_id)
