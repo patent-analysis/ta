@@ -2,6 +2,6 @@ moto
 boto3
 flake8
 textract
-PyMuPDF
 requests
 pytest-mock
+PyMuPDF

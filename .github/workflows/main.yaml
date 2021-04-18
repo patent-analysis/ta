@@ -22,7 +22,7 @@ jobs:
       - name: Lint code
         run: make lint
       - name: Unit Tests
-        run: make test
+        run: pytest -v -s ./src/process_documents/tests/test_process_documents.py
       
       # The integration tests are commented-out because installing the
       # local aws stack takes a long time and burns through our CI quota

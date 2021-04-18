@@ -15,7 +15,7 @@ lint:	## run the flake8 linter
 	@flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
 
 test: ## run the unit tests
-	@pytest -v -s tests
+	@pytest -v -s ./src/process_documents/tests/test_process_documents.py
 
 stack-up: ## run the local aws stack environment
 	cd ./localstack; ./start.sh
@@ -25,8 +25,8 @@ stack-down: ## stop the local aws stack environment
 
 run-local: ## build and invoke the lambda function locally
 	@echo "cleaning all stale docker images and containers...."
-	docker image prune -f
 	docker container prune -f
+	docker image prune -f
 	sam build
 	sam local invoke --parameter-overrides 'KeyPairName=MyKey LocalEnv=true'  -e ./events/process_document_event.json
 
@@ -34,8 +34,8 @@ run-ci: ## build and invoke the lambda function in the ci environment
 	sam local invoke --parameter-overrides 'KeyPairName=MyKey LocalEnv=true'  -e ./events/process_document_event.json
 
 debug-local: ## build and invoke the lambda function in debug mode
-	docker image prune -f
 	docker container prune -f
+	docker image prune -f
 	sam build
 	sam local invoke --parameter-overrides 'KeyPairName=MyKey LocalEnv=true'  -e ./events/process_document_event.json -d
 

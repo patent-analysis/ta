@@ -6,8 +6,8 @@ import pytest
 
 
 mock_event_file = os.path.join(
-    os.path.abspath(os.path.dirname(__file__)),
-    '../events/mock_event.json')
+    os.path.realpath('../ta'), 
+    "events/mock_event.json")
 mock_event_data = open(mock_event_file)
 mock_event = json.load(mock_event_data)
 
@@ -35,16 +35,19 @@ def s3(aws_credentials):
         yield s3
 
 def test_handle_event(s3, mocker):
-    mocker.patch('src.process_documents.app.fitz.open')
+    mocker.patch('app.fitz.open')
     mocker.patch('builtins.open')
     mocker.patch('os.path.exists')
-    mocker.patch('src.process_documents.app.requests.get', return_value= MockResponse())
-    mocker.patch('src.process_documents.app.SeqListing')
-    mocker.patch('src.process_documents.app.Patent')
-    mocker.patch('src.process_documents.app.dynamodb')
-    mocker.patch('src.process_documents.app.textract.process', return_value=str.encode("US800023421B2"))
-
-    from src.process_documents import app
+    mocker.patch('app.requests.get', return_value= MockResponse())
+    mocker.patch('app.SeqListing')
+    mocker.patch('app.Patent')
+    mocker.patch('app.dynamodb')
+    mocker.patch('app.textract.process', return_value=str.encode("US800023421B2"))
+    import os, sys, inspect
+    currentdir = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))
+    parentdir = os.path.dirname(currentdir)
+    sys.path.insert(0,parentdir) 
+    import app
     s3.put_object(Bucket=MOCK_BUCKET_NAME, Key=MOCK_OBJECT_NAME, Body="")
     handler_resp = app.lambda_handler(mock_event, context={})
     assert handler_resp == 'Success'
