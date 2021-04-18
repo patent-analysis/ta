@@ -15,7 +15,7 @@ lint:	## run the flake8 linter
 	@flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
 
 test: ## run the unit tests
-	@pytest -v -s src/process_documents/tests
+	@pytest -v -s ./src/process_documents/tests/test_process_documents.py
 
 stack-up: ## run the local aws stack environment
 	cd ./localstack; ./start.sh
