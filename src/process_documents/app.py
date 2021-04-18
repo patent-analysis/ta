@@ -65,7 +65,7 @@ def extract_patent_id(key):
     page = doc.loadPage(0)
     pix = page.getPixmap(matrix=fitz.Matrix(5, 5))
     pix.writePNG(TMP_IMAGE_PATH + key.replace('pdf', 'png'))
-    parsed_text = textract.process(TMP_IMAGE_PATH + key, method='tesseract').decode('utf-8')
+    parsed_text = textract.process(TMP_IMAGE_PATH + key.replace('pdf', 'png'), method='tesseract').decode('utf-8')
 
     # extract patent id
     raw_pat_id = re.search(DOC_NUMBER_REGEX, parsed_text).group(0)
