@@ -24,7 +24,7 @@ logger = logging.getLogger()
 logger.setLevel(logging.INFO)
 
 #  local env
-if os.getenv('LocalEnv'):
+if os.getenv('LocalEnv') == 'true':
     s3_client = boto3.client(service_name='s3', endpoint_url=LOCAL_STACK_URL, region_name='us-east-1')
     dynamodb = boto3.client(service_name='dynamodb', endpoint_url=LOCAL_STACK_URL, region_name='us-east-1')
 else:
