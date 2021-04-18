@@ -19,6 +19,7 @@ LISTINGS_BASE_URL = 'https://uspto-documents-storage.s3.amazonaws.com/seq/'
 FULL_PDF_PATH = '/tmp/'
 TMP_IMAGE_PATH = '/tmp/'
 
+
 doc_num_matcher = re.compile(DOC_NUMBER_REGEX)
 logger = logging.getLogger()
 logger.setLevel(logging.INFO)
