@@ -16,7 +16,7 @@ Parameters:
 
 Resources:
   ProcessPatentDocuments:
-    Handler: ./src/process_documents/app.lambdaHandler
+    Handler: app.lambda_handler
     Type: 'AWS::Serverless::Function'
     Timeout: 900
     Properties:
