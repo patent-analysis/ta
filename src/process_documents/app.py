@@ -148,7 +148,7 @@ def lambda_handler(event, context):
 
     try:
         patent, seq_listing = process_document(bucket, object_key)
-        logger.info("Complleted processing the pdf document..")
+        logger.info("Completed processing the pdf document..")
         result = 'Success'
         if patent and seq_listing:
             logger.info("Patent Name: " + patent.patentName)

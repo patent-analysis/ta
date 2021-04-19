@@ -34,14 +34,14 @@ Resources:
         - Version: '2012-10-17'
           Statement:
             - Effect: Allow
-              Sid: "Allow-S3-Get"
+              Sid: "AllowS3Get"
               Action:
                 - 's3:GetObject'
               Resource: 'arn:aws:s3:::*'
         - Version: '2012-10-17'
           Statement:
             - Effect: Allow
-              Sid: "Allow-DynamoDB-Access"
+              Sid: "AllowDynamoDBAccess"
               Action:
                 - "dynamodb:DescribeTable"
                 - "dynamodb:GetItem"
