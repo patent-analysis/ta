@@ -83,7 +83,7 @@ def extract_document_id(key):
 def process_document(bucket, key, protein_name):
     logger.info("Downloading and processing document {}".format(key))
     # grab the pdf object from s3 bucket
-    s3_object = s3_client.get_object(Bucket=bucket, Key=protein_name+'/'+key)
+    s3_object = s3_client.get_object(Bucket=bucket, Key=protein_name + '/' + key)
     pdf_object = s3_object['Body'].read()
     full_pdf_file_path = TMP_DIR_PATH + key
     with open(full_pdf_file_path, 'wb') as f:

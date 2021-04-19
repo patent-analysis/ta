@@ -12,7 +12,7 @@ mock_event_data = open(mock_event_file)
 mock_event = json.load(mock_event_data)
 
 MOCK_BUCKET_NAME = 'mock-bucket'
-MOCK_OBJECT_NAME = 'mock-patent.pdf'
+MOCK_OBJECT_NAME = 'protein/mock-patent.pdf'
 
 
 @pytest.fixture(scope='function')
@@ -43,11 +43,10 @@ def test_handle_event(s3, mocker):
     mocker.patch('app.Patent')
     mocker.patch('app.dynamodb')
     mocker.patch('app.textract.process', return_value=str.encode("US800023421B2"))
-    import os, sys, inspect
+    import os, sys, inspect, app
     currentdir = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))
     parentdir = os.path.dirname(currentdir)
     sys.path.insert(0,parentdir) 
-    import app
     s3.put_object(Bucket=MOCK_BUCKET_NAME, Key=MOCK_OBJECT_NAME, Body="")
     handler_resp = app.lambda_handler(mock_event, context={})
     assert handler_resp == 'Success'

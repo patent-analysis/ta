@@ -4,7 +4,7 @@
             "s3": {
                 "object": {
                     "eTag": "1c43a0c9dcc31572b5e49c0b42f8b17f", 
-                    "key": "mock-patent.pdf", 
+                    "key": "protein/mock-patent.pdf", 
                     "sequencer": "0A1B2C3D4E5F678901", 
                     "size": 1024
                 }, 
