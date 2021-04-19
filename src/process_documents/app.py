@@ -37,7 +37,7 @@ def extract_seq_info(patent_id):
     logger.info("requesting " + LISTINGS_BASE_URL + listing_path)
     response = requests.get(LISTINGS_BASE_URL + listing_path)
     logger.info("response status code: " + str(response.status_code))
-    full_document_path = 'seq_' + TMP_DIR_PATH + listing_path
+    full_document_path =  TMP_DIR_PATH + 'seq_' + listing_path
 
     if response.status_code == 200:
         with open(full_document_path, 'wb') as f:
@@ -67,10 +67,12 @@ def extract_document_id(key):
     full_image_path = TMP_DIR_PATH + key.replace('pdf', 'png')
     doc = fitz.open(full_pdf_file_path)
     page = doc.loadPage(0)
+    print('Loaded the first document page')
     pix = page.getPixmap(matrix=fitz.Matrix(5, 5))
     pix.writePNG(full_image_path)
+    print('Parsing the first document page text ...')
     parsed_text = textract.process(full_image_path, method='tesseract').decode('utf-8')
-    print('Doc first page parsed Text: {}'.format(parsed_text))
+    print('First page parsed Text: {}'.format(parsed_text).replace('\n', '\\n'))
     # extract the patent id
     raw_pat_id = re.search(DOC_NUMBER_REGEX, parsed_text)
     raw_pat_id = raw_pat_id.group()
