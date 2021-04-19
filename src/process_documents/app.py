@@ -103,6 +103,7 @@ def process_document(bucket, key):
 
 
 def persist_doc_records(patent, seq_listing):
+    # TODO: FIX THE TABLE NAMES
     patents_table = dynamodb.Table('patents-dev')
     biomolecules_table = dynamodb.Table('bioMolecules-dev')
 

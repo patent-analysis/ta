@@ -9,13 +9,14 @@ logger.setLevel(logging.INFO)
 class Patent:
     def __init__(self, full_document_path, patent_id):
         self.patentNumber = patent_id
-        self.__process_xml(full_document_path)
+        self.full_document_path = full_document_path
+        self.__process_xml()
         #Extract epitope information
         self.__extract_epitope_info()
       
         
-    def __process_xml(self, full_document_path):
-        tree = et.parse(full_document_path)
+    def __process_xml(self):
+        tree = et.parse(self.full_document_path)
         root = tree.getroot()
         logger.info("in __process_xml")
         self.patentName = root.find('.//invention-title').text
