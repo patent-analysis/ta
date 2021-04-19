@@ -9,10 +9,11 @@ logger.setLevel(logging.INFO)
 class SeqListing:
     def __init__(self, full_document_path, patent_id):
         self.patentNumber = patent_id
-        self.__process_listings_xml(full_document_path)
+        self.full_document_path = full_document_path
+        self.__process_listings_xml()
         
-    def __process_listings_xml(self, full_document_path):
-        tree = et.parse(full_document_path)
+    def __process_listings_xml(self):
+        tree = et.parse(self.full_document_path)
         root = tree.getroot()
         logger.info("in __process_listings_xml")
         sequencesRaw = [' '.join(el.itertext()) for el in root.findall('.//s400')]
