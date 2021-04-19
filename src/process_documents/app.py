@@ -80,10 +80,10 @@ def extract_document_id(key):
     return 'US' + doc_number
 
 
-def process_document(bucket, key):
+def process_document(bucket, key, protein_name):
     logger.info("Downloading and processing document {}".format(key))
-    # grab pdf object from s3 bucket
-    s3_object = s3_client.get_object(Bucket=bucket, Key=key)
+    # grab the pdf object from s3 bucket
+    s3_object = s3_client.get_object(Bucket=bucket, Key=protein_name+'/'+key)
     pdf_object = s3_object['Body'].read()
     full_pdf_file_path = TMP_DIR_PATH + key
     with open(full_pdf_file_path, 'wb') as f:
@@ -100,7 +100,7 @@ def process_document(bucket, key):
     return patent, seq_listing
 
 
-def persist_doc_records(patent, seq_listing):
+def persist_doc_records(patent, seq_listing, protein_name):
     # TODO: FIX THE TABLE NAMES
     patents_table = dynamodb.Table('patents-dev')
     biomolecules_table = dynamodb.Table('bioMolecules-dev')
@@ -110,7 +110,7 @@ def persist_doc_records(patent, seq_listing):
         Item={
             'patentNumber': patent.patentNumber,
             'patentName': patent.patentName,
-            'proteinId': '',
+            'proteinId': protein_name,
             'claimedResidues': patent.claimedResidues,
             'applicants': ' '.join(patent.applicants),
             'patentAssignees': ' '.join(patent.patentAssignees),
@@ -147,13 +147,15 @@ def lambda_handler(event, context):
         event['Records'][0]['s3']['object']['key'])
 
     try:
-        patent, seq_listing = process_document(bucket, object_key)
+        protein_name = object_key.split('/')[0]
+        key = object_key.split('/')[1]
+        patent, seq_listing = process_document(bucket, key, protein_name)
         logger.info("Completed processing the pdf document..")
         result = 'Success'
         if patent and seq_listing:
             logger.info("Patent Name: " + patent.patentName)
             logger.info("SeqListing count: " + str(seq_listing.seqCount))
-            persist_doc_records(patent, seq_listing)
+            persist_doc_records(patent, seq_listing, protein_name)
             return result
         else:
             result = ''
