@@ -37,7 +37,7 @@ def extract_seq_info(patent_id):
     logger.info("requesting " + LISTINGS_BASE_URL + listing_path)
     response = requests.get(LISTINGS_BASE_URL + listing_path)
     logger.info("response status code: " + str(response.status_code))
-    full_document_path = 'seq_' + TMP_DIR_PATH + listing_path
+    full_document_path =  TMP_DIR_PATH + 'seq_' + listing_path
 
     if response.status_code == 200:
         with open(full_document_path, 'wb') as f:
