@@ -14,18 +14,21 @@ from collections import Counter
 
 LOCAL_STACK_URL = 'http://host.docker.internal:4566' # mac specific setting, windows should use localhost
 DOC_NUMBER_REGEX = '((US|us)\\s?([,|\\/|\\s|\\d|&])+\\s?([a-zA-Z]\\d))'
+
 PATENT_BASE_URL = 'https://uspto-documents-storage.s3.amazonaws.com/docs/'
 LISTINGS_BASE_URL = 'https://uspto-documents-storage.s3.amazonaws.com/seq/'
-FULL_PDF_PATH = '/tmp/'
-TMP_IMAGE_PATH = '/tmp/'
+
+TMP_DIR_PATH = '/tmp/'
+
 
 
 doc_num_matcher = re.compile(DOC_NUMBER_REGEX)
 logger = logging.getLogger()
 logger.setLevel(logging.INFO)
 
-#  local env
+
 if os.getenv('LocalEnv') == 'true':
+    """ Use the localstack instead of aws services when running locally """
     s3_client = boto3.client(service_name='s3', endpoint_url=LOCAL_STACK_URL, region_name='us-east-1')
     dynamodb = boto3.client(service_name='dynamodb', endpoint_url=LOCAL_STACK_URL, region_name='us-east-1')
 else:
@@ -33,66 +36,73 @@ else:
     dynamodb = boto3.resource('dynamodb', region_name='us-east-1')
 
 
-def fetch_seq_listing(patent_id):
+def extract_seq_info(patent_id):
     listing_path = patent_id + '.xml'
     logger.info("requesting " + LISTINGS_BASE_URL + listing_path)
     response = requests.get(LISTINGS_BASE_URL + listing_path)
     logger.info("remote request status: " + str(response.status_code))
+    full_document_path = TMP_DIR_PATH + listing_path
 
     if response.status_code == 200:
         with open(listing_path, 'wb') as f:
             f.write(response.content)
-            return SeqListing(patent_id)
+            return SeqListing(full_document_path, patent_id)
     else:
         return None
 
 
-def fetch_patent_data(patent_id):
+def extract_document_info(patent_id):
     patent_path = patent_id + '.xml'
     logger.info("requesting " + PATENT_BASE_URL + patent_path)
     response = requests.get(PATENT_BASE_URL + patent_path)
     logger.info("remote request status: " + str(response.status_code))
 
+    full_document_path = TMP_DIR_PATH + patent_path
     if response.status_code == 200:
-        with open(patent_path, 'wb') as f:
+        with open(full_document_path, 'wb') as f:
             f.write(response.content)
-        return Patent(patent_id)
+        return Patent(full_document_path, patent_id)
     else:
         return None    
 
 
-def extract_patent_id(key):
-    doc = fitz.open(FULL_PDF_PATH + key)
+def extract_document_id(key):
+    full_pdf_file_path = TMP_DIR_PATH + key
+    full_image_path = TMP_DIR_PATH + key.replace('pdf', 'png')
+    doc = fitz.open(full_pdf_file_path)
     page = doc.loadPage(0)
     pix = page.getPixmap(matrix=fitz.Matrix(5, 5))
-    pix.writePNG(TMP_IMAGE_PATH + key.replace('pdf', 'png'))
-    parsed_text = textract.process(TMP_IMAGE_PATH + key.replace('pdf', 'png'), method='tesseract').decode('utf-8')
+    pix.writePNG(full_image_path)
+    parsed_text = textract.process(full_image_path, method='tesseract').decode('utf-8')
 
-    # extract patent id
+    # extract the patent id
     raw_pat_id = re.search(DOC_NUMBER_REGEX, parsed_text).group(0)
     patent_id = re.sub('[,|&|\\s|/]', '',raw_pat_id).strip('0')
     return patent_id
 
 
-def parse_doc_text(bucket, key):
+def process_document(bucket, key):
     logger.info("Downloading and processing document {}".format(key))
     # grab pdf object from s3 bucket
     s3_object = s3_client.get_object(Bucket=bucket, Key=key)
     pdf_object = s3_object['Body'].read()
-    with open(FULL_PDF_PATH + key, 'wb') as f:
+    full_pdf_file_path = TMP_DIR_PATH + key
+    with open(full_pdf_file_path, 'wb') as f:
         f.write(pdf_object)
-    logger.info("Downloaded s3 object {}".format(key))
+    logger.info("Downloaded s3 object {} to file {}".format(key, full_pdf_file_path))
 
     # extract patent id from first page
-    patent_id = extract_patent_id(key)
+    patent_id = extract_document_id(key)
+    # TODO: check if I need to strip the US from the patent ID
+    logger.info('Extracted document ID {} from the pdf file'.format(patent_id))
 
     # extract and return patent metadata and sequence listing
-    patent = fetch_patent_data(patent_id)
-    seq_listing = fetch_seq_listing(patent_id)
+    patent = extract_document_info(patent_id)
+    seq_listing = extract_seq_info(patent_id)
     return patent, seq_listing
 
 
-def persist_patent_record_to_db(patent, seq_listing):
+def persist_doc_records(patent, seq_listing):
     patents_table = dynamodb.Table('patents-dev')
     biomolecules_table = dynamodb.Table('bioMolecules-dev')
 
@@ -130,22 +140,21 @@ def persist_patent_record_to_db(patent, seq_listing):
 
 def lambda_handler(event, context):
     '''
-    Handles newly uploaded pattent pdf docs.
+    Process the pdf documents.
     '''
-    print(s3_client)
     logger.debug("Handling event: {}".format(json.dumps(event, indent=2)))
     bucket = event['Records'][0]['s3']['bucket']['name']
     object_key = urllib.parse.unquote_plus(
         event['Records'][0]['s3']['object']['key'])
 
     try:
-        patent, seq_listing = parse_doc_text(bucket, object_key)
-        logger.info("Done handling event")
+        patent, seq_listing = process_document(bucket, object_key)
+        logger.info("Complleted processing the pdf document..")
         result = 'Success'
         if patent and seq_listing:
             logger.info("Patent Name: " + patent.patentName)
             logger.info("SeqListing count: " + str(seq_listing.seqCount))
-            persist_patent_record_to_db(patent, seq_listing)
+            persist_doc_records(patent, seq_listing)
             return result
         else:
             result = ''
@@ -160,5 +169,5 @@ def lambda_handler(event, context):
 
     except Exception as e:
         logger.error("Error processing key {} Event {} Error: {}".format(
-            object_key, json.dumps(event, indent=2),  e))
+            object_key, json.dumps(event, indent=None),  e))
         raise e
