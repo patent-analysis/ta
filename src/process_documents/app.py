@@ -13,16 +13,12 @@ from classes.seqlisting import SeqListing
 from collections import Counter
 
 LOCAL_STACK_URL = 'http://host.docker.internal:4566' # mac specific setting, windows should use localhost
-DOC_NUMBER_REGEX = '((US|us)\\s?([,|\\/|\\s|\\d|&])+\\s?([a-zA-Z]\\d))'
-
+DOC_NUMBER_REGEX = "((US|us)\\s?([,|\\/|\\s|\\d|&])+\\s?([a-zA-Z]\\d))"
 PATENT_BASE_URL = 'https://uspto-documents-storage.s3.amazonaws.com/docs/'
 LISTINGS_BASE_URL = 'https://uspto-documents-storage.s3.amazonaws.com/seq/'
-
 TMP_DIR_PATH = '/tmp/'
 
 
-
-doc_num_matcher = re.compile(DOC_NUMBER_REGEX)
 logger = logging.getLogger()
 logger.setLevel(logging.INFO)
 
@@ -40,7 +36,7 @@ def extract_seq_info(patent_id):
     listing_path = patent_id + '.xml'
     logger.info("requesting " + LISTINGS_BASE_URL + listing_path)
     response = requests.get(LISTINGS_BASE_URL + listing_path)
-    logger.info("remote request status: " + str(response.status_code))
+    logger.info("response status code: " + str(response.status_code))
     full_document_path = TMP_DIR_PATH + listing_path
 
     if response.status_code == 200:
@@ -55,7 +51,7 @@ def extract_document_info(patent_id):
     patent_path = patent_id + '.xml'
     logger.info("requesting " + PATENT_BASE_URL + patent_path)
     response = requests.get(PATENT_BASE_URL + patent_path)
-    logger.info("remote request status: " + str(response.status_code))
+    logger.info("response status code: " + str(response.status_code))
 
     full_document_path = TMP_DIR_PATH + patent_path
     if response.status_code == 200:
@@ -74,11 +70,12 @@ def extract_document_id(key):
     pix = page.getPixmap(matrix=fitz.Matrix(5, 5))
     pix.writePNG(full_image_path)
     parsed_text = textract.process(full_image_path, method='tesseract').decode('utf-8')
-
+    print('Doc first page parsed Text: {}'.format(parsed_text))
     # extract the patent id
-    raw_pat_id = re.search(DOC_NUMBER_REGEX, parsed_text).group(0)
-    patent_id = re.sub('[,|&|\\s|/]', '',raw_pat_id).strip('0')
-    return patent_id
+    raw_pat_id = re.search(DOC_NUMBER_REGEX, parsed_text)
+    raw_pat_id = raw_pat_id.group()
+    doc_number = re.sub('[us|US|,|&|\s|/]', '',raw_pat_id).strip('0')
+    return 'US' + doc_number
 
 
 def process_document(bucket, key):
@@ -92,13 +89,12 @@ def process_document(bucket, key):
     logger.info("Downloaded s3 object {} to file {}".format(key, full_pdf_file_path))
 
     # extract patent id from first page
-    patent_id = extract_document_id(key)
-    # TODO: check if I need to strip the US from the patent ID
-    logger.info('Extracted document ID {} from the pdf file'.format(patent_id))
+    document_id = extract_document_id(key)
+    logger.info('Extracted Document ID {} from pdf file'.format(document_id))
 
     # extract and return patent metadata and sequence listing
-    patent = extract_document_info(patent_id)
-    seq_listing = extract_seq_info(patent_id)
+    patent = extract_document_info(document_id)
+    seq_listing = extract_seq_info(document_id)
     return patent, seq_listing
 
 

@@ -18,7 +18,7 @@ class Patent:
     def __process_xml(self):
         tree = et.parse(self.full_document_path)
         root = tree.getroot()
-        logger.info("in __process_xml")
+        logger.info('processing xml file {}'.format(self.full_document_path))
         self.patentName = root.find('.//invention-title').text
         self.patentDate = root.find('.//publication-reference').find('.//date').text
         self.inventors = [el.find('.//first-name').text + ' ' + 
