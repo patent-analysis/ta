@@ -7,28 +7,31 @@ This is a serverless stack that will be triggered to mine the patent pdf documen
 Below is the project structure.
 ```bash
 .
-├── README.md                       <-- This is the readme file
-├── src                             <-- Source code for the Lambda functions
-│   └── process_documents           <-- Source code for the Text Mining Lambda function
-│       ├── __init__.py
-│       │── app.py                  <-- Lambda function code
-│       └── Dockerfile              <-- Docker file used to build the function.
+├── README.md                               <-- This is the readme file
+├── src                                     <-- Source code for the Lambda functions
+│   └── process_documents                   <-- Source code for the Text Mining Lambda function
+│       ├── classes
+│       │   │── __init__.py
+│       │   │── patent.py                   <-- Source code for extracting patent metadata from patent xml
+│       │   └── seqlisting.py               <-- Source code for extracting sequences from patent sequence xml
+│       ├── tests
+│       │   ├── __init__.py
+│       │   └── test_process_documents.py   <-- Tests for the process_documents  function.
+│       │── app.py                          <-- Lambda function code
+│       └── Dockerfile                      <-- Docker file used to build the function.
 │
-├── tests
-│   ├── __init__.py
-│   └── test_process_documents.py   <-- Tests for the process_documents  function.
 │
-├── localstack                      <-- This is a local AWS environment that can be started locally.
-│   ├── start.sh                    <-- Script to start the local aws environment.
-│   ├── docker-compose.yaml         <-- Docker compose file to start the build and run the docker environment.
-│   └── local-patent.pdf            <-- Dummy text document disguised as pdf for testing.
+├── localstack                              <-- This is a local AWS environment that can be started locally.
+│   ├── start.sh                            <-- Script to start the local aws environment.
+│   ├── docker-compose.yaml                 <-- Docker compose file to start the build and run the docker environment.
+│   └── local-patent.pdf                    <-- Dummy text document disguised as pdf for testing.
 │
-├── events                          <-- Directory containing mock events to use for testing.
-│   └── ....                        <-- Test events
+├── events                                  <-- Directory containing mock events to use for testing.
+│   └── ....                                <-- Test events
 │
-├── requirements_*.txt              <-- Python requirements files
-├── Makefile                        <-- Make file to bootstrap the project scripts           
-└── template.yaml                   <-- AWS Environment SAM template
+├── requirements_*.txt                      <-- Python requirements files
+├── Makefile                                <-- Make file to bootstrap the project scripts           
+└── template.yaml                           <-- AWS Environment SAM template
 ```
 
 
