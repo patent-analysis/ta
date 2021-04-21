@@ -61,29 +61,4 @@ Resources:
   SourceBucket:
     Type: 'AWS::S3::Bucket'
     Properties:
-      BucketName: psv-document-storage
-      AccessControl: BucketOwnerFullControl
-  
-  SourceBucketPolicy:
-    Type: 'AWS::S3::BucketPolicy'
-    Properties:
-      Bucket: psv-document-storage
-      PolicyDocument:
-        Statement:
-          - Sid: PublicRead
-            Effect: Allow
-            Principal: "*"
-            Action:
-              - s3:GetObject
-              - s3:GetObjectVersion
-            Resource:
-              - arn:aws:s3:::psv-document-storage/* 
-          - Sid: ReadWrite
-            Effect: Allow
-            Principal: 
-              AWS: 
-              -  "arn:aws:iam::147427553671:user/psv_app" 
-            Action:
-              - s3:*
-            Resource:
-              - arn:aws:s3:::psv-document-storage/*   
+      BucketName: psv-docs10725-dev
