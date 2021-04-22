@@ -18,4 +18,3 @@ services:
 networks:
   host_network:
     external: true
-    name: host_net
