@@ -68,8 +68,6 @@ Resources:
   
   SourceBucketPolicy:
     Type: 'AWS::S3::BucketPolicy'
-    DependsOn:
-      - SourceBucket
     Properties:
       Bucket: psv-document-storage
       PolicyDocument:
