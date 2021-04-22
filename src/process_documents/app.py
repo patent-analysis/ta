@@ -8,6 +8,7 @@ import re
 import requests
 import json
 import fitz
+import datetime
 from classes.patent import Patent
 from classes.seqlisting import SeqListing
 from collections import Counter
@@ -122,7 +123,7 @@ def persist_doc_records(patent, seq_listing, protein_name):
             'claimsCount': patent.claimsCount,
             'sequenceCount': '',
             'patentFileDate': '',
-            'createdDate': '',
+            'createdDate': datetime.datetime.now(),
             'patentDocPath': ''
         }
     )
