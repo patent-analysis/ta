@@ -72,17 +72,19 @@ Resources:
       Bucket: psv-document-storage
       PolicyDocument:
         Statement:
-        - Effect: Allow
+        - Sid: AllowGet
+          Effect: Allow
           Principal: "*"
           Action:
             - s3:GetObject
             - s3:GetObjectVersion
           Resource:
             - arn:aws:s3:::psv-document-storage/* 
-        - Effect: Allow
+        - AllowPost
+          Effect: Allow
           Principal: 
             AWS: 
-              - "arn:aws:iam::147427553671:user/*"
+            -  "arn:aws:iam::147427553671:user/psv_app" 
           Action:
             - s3:*
           Resource:
