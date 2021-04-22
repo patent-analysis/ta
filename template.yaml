@@ -80,7 +80,7 @@ Resources:
             - s3:GetObjectVersion
           Resource:
             - arn:aws:s3:::psv-document-storage/* 
-        - AllowPost
+        - Sid: AllowPost
           Effect: Allow
           Principal: 
             AWS: 
