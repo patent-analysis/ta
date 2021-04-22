@@ -15,7 +15,11 @@ Resources:
             Effect: Allow
             Principal: 
               AWS:
-                - !Join [':', ['arn:aws:iam:',  !Ref AWS::AccountId, 'user/psv_app']]  
+                - !Join
+                    - ''
+                    - - 'arn:aws:iam:'
+                      - !Ref AWS::AccountId
+                      - '*/*'
             Action: 
               - "ecr:GetDownloadUrlForLayer"
               - "ecr:BatchGetImage"
