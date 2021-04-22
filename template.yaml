@@ -81,12 +81,8 @@ Resources:
             - arn:aws:s3:::psv-document-storage/* 
         - Effect: Allow
           Principal: 
-            AWS:
-              - !Join
-                  - ':'
-                  - - 'arn:aws:iam:'
-                    - !Ref AWS::AccountId
-                    - '*/*' 
+            AWS: 
+              - "arn:aws:iam:::*/*"
           Action:
             - s3:*
           Resource:

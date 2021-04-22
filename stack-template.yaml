@@ -14,12 +14,8 @@ Resources:
             Sid: AllowPushPull
             Effect: Allow
             Principal: 
-              AWS:
-                - !Join
-                    - ':'
-                    - - 'arn:aws:iam:'
-                      - !Ref AWS::AccountId
-                      - '*/*'
+              AWS: 
+                - "arn:aws:iam:::user/psv_app"
             Action: 
               - "ecr:GetDownloadUrlForLayer"
               - "ecr:BatchGetImage"
