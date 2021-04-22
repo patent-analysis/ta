@@ -82,8 +82,17 @@ Resources:
             Effect: Allow
             Principal: 
               AWS:
-                - !Join [':', ['arn:aws:iam:',  !Ref AWS::AccountId, '*/*']]   
+                - !Join [':', ['arn:aws:iam:',  !Ref AWS::AccountId, 'user/*']]   
             Action:
               - s3:*
             Resource:
               - arn:aws:s3:::psv-document-storage/*   
+          - Sid: RoleReadWrite
+            Effect: Allow
+            Principal: 
+              AWS:
+                - !Join [':', ['arn:aws:iam:',  !Ref AWS::AccountId, 'role/*']]   
+            Action:
+              - s3:*
+            Resource:
+              - arn:aws:s3:::psv-document-storage/*       

@@ -1,8 +1,9 @@
 #!/bin/bash
-# echo "creating the host_net docker network ..."
-docker network create -d host host_network 
+docker network create host_network && 
 echo "starting the localstack environment.."
 docker-compose up -d
+echo "waiting for the localstack services to start ..."
+sleep 30s
 echo "creating a dummy bucket in the local env..."
 aws --endpoint-url=http://localhost:4566 s3 mb s3://local-bucket
 echo "modify the bucket acl"
