@@ -84,7 +84,11 @@ Resources:
             Effect: Allow
             Principal: 
               AWS:
-                - !Join [':', ['arn:aws:iam:',  !Ref AWS::AccountId, 'user/*']]   
+                !Join:
+                  - ''
+                  - - 'arn:aws:iam::'
+                    - Ref: AWS::AccountId
+                    - ':user/*'
             Action:
               - s3:*
             Resource:
@@ -93,7 +97,11 @@ Resources:
             Effect: Allow
             Principal: 
               AWS:
-                - !Join [':', ['arn:aws:iam:',  !Ref AWS::AccountId, 'role/*']]   
+                !Join:
+                  - ''
+                  - - 'arn:aws:iam::'
+                    - Ref: AWS::AccountId
+                    - ':role/*'
             Action:
               - s3:*
             Resource:
