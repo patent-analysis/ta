@@ -16,8 +16,6 @@ Parameters:
 
 Resources:
   ProcessPatentDocuments:
-    DependsOn:
-      - SourceBucket
     Handler: app.lambda_handler
     Type: 'AWS::Serverless::Function'
     Timeout: 900
@@ -68,6 +66,8 @@ Resources:
   
   SourceBucketPolicy:
     Type: 'AWS::S3::BucketPolicy'
+    DependsOn:
+      - SourceBucket
     Properties:
       Bucket: psv-document-storage
       PolicyDocument:
