@@ -81,8 +81,9 @@ Resources:
           - Sid: ReadWrite
             Effect: Allow
             Principal: 
-              AWS: 
-              -  "arn:aws:iam::147427553671:user/psv_app" 
+              AWS:
+              - !Join [':', ['arn:aws:iam:',  !Ref AWS::AccountId, 'user/*']]   
+              - !Join [':', ['arn:aws:iam:',  !Ref AWS::AccountId, 'role/*']]   
             Action:
               - s3:*
             Resource:
