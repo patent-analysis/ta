@@ -1,6 +1,6 @@
 #!/bin/bash
-echo "creating the host_net docker network ..."
-docker network create host_net
+# echo "creating the host_net docker network ..."
+docker network create -d host host_network 
 echo "starting the localstack environment.."
 docker-compose up -d
 echo "creating a dummy bucket in the local env..."
