@@ -82,7 +82,7 @@ Resources:
         - Effect: Allow
           Principal: 
             AWS: 
-              - "arn:aws:iam::147427553671:*"
+              - "arn:aws:iam::147427553671:user/*"
           Action:
             - s3:*
           Resource:
