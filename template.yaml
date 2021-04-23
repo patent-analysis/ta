@@ -84,7 +84,7 @@ Resources:
           Effect: Allow
           Principal: 
             AWS: 
-            -  arn:aws:iam::147427553671:user/*
+            -  arn:aws:iam::147427553671:user/psv_app
           Action:
             - s3:*
           Resource:
@@ -93,7 +93,7 @@ Resources:
           Effect: Allow
           Principal: 
             AWS: 
-            -  arn:aws:iam::147427553671:role/*
+            -  arn:aws:iam::147427553671:role/todo_role
           Action:
             - s3:*
           Resource:
