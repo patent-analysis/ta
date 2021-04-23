@@ -84,18 +84,10 @@ Resources:
           Effect: Allow
           Principal: 
             AWS: 
-            -  arn:aws:iam::147427553671:user/psv_app
+            -  "arn:aws:iam::147427553671:user/psv_app"
           Action:
             - s3:*
           Resource:
             - arn:aws:s3:::psv-document-storage/*
-        - Sid: AllowRolePost
-          Effect: Allow
-          Principal: 
-            AWS: 
-            -  arn:aws:iam::147427553671:role/todo_role
-          Action:
-            - s3:*
-          Resource:
-            - arn:aws:s3:::psv-document-storage/*
+# TODO: ALLOW WHATEVER THE LAMBDA ROLE IS
 
