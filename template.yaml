@@ -89,7 +89,7 @@ Resources:
             - s3:*
           Resource:
             - arn:aws:s3:::psv-document-storage/*
-        - Sid: AllowPost
+        - Sid: AllowRolePost
           Effect: Allow
           Principal: 
             AWS: 
