@@ -84,9 +84,18 @@ Resources:
           Effect: Allow
           Principal: 
             AWS: 
-            -  "arn:aws:iam::147427553671:user/*"
-            -  "arn:aws:iam::147427553671:role/*" 
+            -  arn:aws:iam::147427553671:user/*
           Action:
             - s3:*
           Resource:
             - arn:aws:s3:::psv-document-storage/*
+        - Sid: AllowPost
+          Effect: Allow
+          Principal: 
+            AWS: 
+            -  arn:aws:iam::147427553671:role/*
+          Action:
+            - s3:*
+          Resource:
+            - arn:aws:s3:::psv-document-storage/*
+
