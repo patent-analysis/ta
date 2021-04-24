@@ -63,6 +63,20 @@ Resources:
     Properties:
       BucketName: psv-document-storage
       AccessControl: BucketOwnerFullControl
+      CorsConfiguration:
+        CorsRules:
+          - AllowedHeaders:
+              - '*'
+            AllowedMethods:
+              - HEAD
+              - GET
+              - PUT
+              - POST
+              - DELETE
+            AllowedOrigins:
+              - '*'
+            Id: allowPsv
+            MaxAge: '3600'
   
   SourceBucketPolicy:
     Type: 'AWS::S3::BucketPolicy'
