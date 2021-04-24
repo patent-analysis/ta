@@ -1,10 +1,46 @@
 import string
 import re
-
 import xml.etree.ElementTree as et
 import logging
 logger = logging.getLogger()
 logger.setLevel(logging.INFO)
+
+def find(tree, element):
+    elem = tree.find(element)
+    if elem == None:
+        return ''
+    return elem.text
+
+def find_all_nested(tree, parent, element):
+    parents = tree.findall(parent)
+    res = []
+    for parent in parents:
+        elements = parent.findall(element)
+        if elements != None:
+            for elem in elements:
+                if elem != None and elem.text != None:
+                    res.append(elem.text)
+                
+    return ', '.join(res)
+
+def find_all(tree, element):
+    elements = tree.findall(element)
+    res = []
+    for elem in elements:
+        res.append(elem.text)
+    return ', '.join(res)
+
+def find_names(tree, parent):
+    parents = tree.findall(parent)
+    res = []
+    for parent in parents:
+        first = parent.find('.//first-name')
+        last = parent.find('.//last-name')
+        if first == None or last == None:
+            continue
+        res.append(first.text + ' '+ last.text)
+    return ', '.join(res)       
+
 
 class Patent:
     def __init__(self, full_document_path, patent_id):
@@ -19,42 +55,35 @@ class Patent:
         tree = et.parse(self.full_document_path)
         root = tree.getroot()
         logger.info('processing xml file {}'.format(self.full_document_path))
-        self.patentName = root.find('.//invention-title').text
-        self.patentDate = root.find('.//publication-reference').find('.//date').text
-        self.inventors = [el.find('.//first-name').text + ' ' + 
-                            el.find('.//last-name').text
-                            for el in root.findall('.//inventor')]
-        self.abstract = ' '.join([' '.join(el.itertext()) 
-                            for el in root.findall('.//abstract')])
-        self.description = ' '.join([' '.join(el.itertext()) 
-                            for el in root.findall('.//description')])
-        self.claims = [' '.join(el.itertext()) 
-                            for el in root.findall('.//claim')]
-        self.patentAssignees = [el.find('.//orgname').text 
-                            for el in root.findall('.//assignee')]
-        self.applicants = [el.find('.//orgname').text 
-                                for el in root.findall('.//us-applicant')]
-        self.examiners = root.find('.//primary-examiner').find('.//first-name').text + ' ' + root.find('.//primary-examiner').find('.//last-name').text
+    
+        self.patentName = find(root, './/invention-title')
+        self.patentDate = find_all_nested(root, './/publication-reference', './/date')
+        self.abstract = find_all_nested(root, './/abstract', './/p')
+        self.description = find_all_nested(root, './/description', './/p')
+        self.claims = find_all(root, './/claim-text')
+        self.inventors = find_names(root, './/inventor')
+        self.patentAssignees = find_all_nested(root, './/assignee', './/orgname')
+
+        self.applicants = find_all_nested(root, './/us-applicant', './/orgname')
+        self.applicants += find_names(root, './/us-applicant')
+        
+        self.examiners = find_names(root, './/primary-examiner')
         self.claimsCount = len(self.claims)
-        self.appNumber = root.find('.//application-reference').find('.//doc-number').text
-        self.appDate = root.find('.//application-reference').find('.//date').text
+        self.appNumber = find_all_nested(root, './/application-reference', './/doc-number')
+        self.appDate = find_all_nested(root, './/application-reference', './/date')
 
 
     #Extract epitope information
     def __extract_epitope_info(self):
-        #US9574011
         bindingString = r'''([^.]*?antibody(.*)binds(.*)residues[^.]*\.)'''
-        #US8829165
-        #bindingString1 = r'''([^.]*?antibody binds to at least one of the following residues[^.]*\.)'''
-        #US8859741
-        #bindingString2 = r'''([^.]*?antibody binds an epitope on(.*)comprising at least one of residues[^.]*\.)'''
-        #US8563698
-        #bindingString3 = r'''([^.]*?antibody binds to at least one residue within the sequence set forth by residues[^.]*\.)'''
-        #US10023654
+        pattern_1 = r'''((residue[s|\s])(.{0,150})(([A-Z][0-9]{1,5})+(,|and|to|\s?)?([A-Z][0-9]{1,5})?)+(.{0,30})(SEQ ID NO: ([0-9]))\.)'''
+        # TODO: ENHANCE ENHANCE ENHANCE
+
+
         bindingString4 = r'''([^.]*?antibody(.*)binds(.*)residue[^.]*\.)'''
         
         #Regex
-        bindingPattern = [re.compile(p) for p in [bindingString, bindingString4]]
+        bindingPattern = [re.compile(p) for p in [pattern_1, bindingString, bindingString4]]
 
         #claimedResidues array of dictionaries
         self.claimedResidues = []

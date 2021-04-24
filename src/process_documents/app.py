@@ -68,16 +68,16 @@ def extract_document_id(key):
     full_image_path = TMP_DIR_PATH + key.replace('pdf', 'png')
     doc = fitz.open(full_pdf_file_path)
     page = doc.loadPage(0)
-    print('Loaded the first document page')
+    logger.info('Loaded the first document page')
     pix = page.getPixmap(matrix=fitz.Matrix(5, 5))
     pix.writePNG(full_image_path)
-    print('Parsing the first document page text ...')
+    logger.info('Parsing the first document page text ...')
     parsed_text = textract.process(full_image_path, method='tesseract').decode('utf-8')
-    print('First page parsed Text: {}'.format(parsed_text).replace('\n', '\\n'))
+    logger.info('First page parsed Text: {}'.format(parsed_text).replace('\n', '\\n')) # flatten the text for logging
     # extract the patent id
     raw_pat_id = re.search(DOC_NUMBER_REGEX, parsed_text)
     raw_pat_id = raw_pat_id.group()
-    doc_number = re.sub('[us|US|,|&|\s|/]', '',raw_pat_id).strip('0')
+    doc_number = re.sub('[us|US|,|&|\\s|/]', '',raw_pat_id).strip('0')
     return 'US' + doc_number
 
 
@@ -107,6 +107,7 @@ def persist_doc_records(patent, seq_listing, protein_name):
     biomolecules_table = dynamodb.Table('bioMolecules-dev')
 
     # Extract patent data from the response and persist to patents_table
+    # TODO: Add the claimed seq id nos and the actual sequences to this object
     patents_table.put_item(
         Item={
             'patentNumber': patent.patentNumber,
