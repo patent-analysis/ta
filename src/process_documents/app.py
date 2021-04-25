@@ -129,6 +129,8 @@ def persist_doc_records(patent, seq_listing, protein_name):
         }
     )
 
+    # TODO: Use this table to save the protein names!!!
+    # Hmm, no need to store the seq data separetly...
     # Extract biomolecule data from the response and persist to biomolecules_table
     #  ADD ADDITIONAL KEYS AS NEEDED
     biomolecules_table.put_item(

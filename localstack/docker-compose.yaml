@@ -10,7 +10,7 @@ services:
       - "4566:4566"
       - "4571:4571"
     environment:
-      - SERVICES=iam,lambda,s3
+      - SERVICES=iam,lambda,s3,dynamodb
       - DEBUG=1
     volumes:
       - "./.tmp:/tmp/localstack"

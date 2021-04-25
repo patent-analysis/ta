@@ -11,7 +11,14 @@ aws --endpoint-url=http://localhost:4566 s3api put-bucket-acl --bucket local-buc
 echo "verifying the bucket was created successfully..."
 aws --endpoint-url=http://localhost:4566 s3 ls
 echo "adding a local file  from the directory localstack/..."
-aws --endpoint-url=http://localhost:4566 s3 cp local-patent.pdf s3://local-bucket
+aws --endpoint-url=http://localhost:4566 s3 cp local-patent.pdf s3://local-bucket/test/
 echo "listing all objects..."
-aws --endpoint-url=http://localhost:4566 s3 ls s3://local-bucket
+aws --endpoint-url=http://localhost:4566 s3 ls s3://local-bucket/test/
+echo "create db"
+aws --endpoint-url=http://localhost:4566  dynamodb create-table \
+    --table-name patents-dev \
+    --attribute-definitions AttributeName=patentNumber,AttributeType=S \
+    --key-schema AttributeName=patentNumber,KeyType=HASH\
+    --provisioned-throughput ReadCapacityUnits=10,WriteCapacityUnits=5\
+
 echo "done starting the localstack env."
