@@ -27,7 +27,7 @@ logger.setLevel(logging.INFO)
 if os.getenv('LocalEnv') == 'true':
     """ Use the localstack instead of aws services when running locally """
     s3_client = boto3.client(service_name='s3', endpoint_url=LOCAL_STACK_URL, region_name='us-east-1')
-    dynamodb = boto3.client(service_name='dynamodb', endpoint_url=LOCAL_STACK_URL, region_name='us-east-1')
+    dynamodb = boto3.resource(service_name='dynamodb', endpoint_url=LOCAL_STACK_URL, region_name='us-east-1')
 else:
     s3_client = boto3.client('s3', region_name='us-east-1')
     dynamodb = boto3.resource('dynamodb', region_name='us-east-1')
@@ -100,20 +100,31 @@ def process_document(bucket, key, protein_name):
     seq_listing = extract_seq_info(document_id)
     return patent, seq_listing
 
+def get_sequences_list(patent, seq_listing):
+    sequences_list = []
+    for mentioned_residue in patent.mentinedResidues:
+        seq = mentioned_residue['seqId']
+        seq_value = seq_listing.sequences[int(seq) - 1]
+        seq_obj = {}
+        seq_obj['seqIdNo'] = seq
+        seq_obj['value'] = seq_value
+        sequences_list.append(seq_obj)
+    return sequences_list
 
 def persist_doc_records(patent, seq_listing, protein_name):
     # TODO: FIX THE TABLE NAMES
     patents_table = dynamodb.Table('patents-dev')
     biomolecules_table = dynamodb.Table('bioMolecules-dev')
-
     # Extract patent data from the response and persist to patents_table
     # TODO: Add the claimed seq id nos and the actual sequences to this object
     patents_table.put_item(
         Item={
             'patentNumber': patent.patentNumber,
+            'docId': patent.patentNumber,
             'patentName': patent.patentName,
             'proteinId': protein_name,
-            'claimedResidues': patent.claimedResidues,
+            'mentinedResidues': patent.mentinedResidues,
+            'sequences': get_sequences_list(patent, seq_listing),
             'applicants': ' '.join(patent.applicants),
             'patentAssignees': ' '.join(patent.patentAssignees),
             'inventors': ' '.join(patent.inventors),
