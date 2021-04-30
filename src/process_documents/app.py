@@ -102,7 +102,7 @@ def process_document(bucket, key, protein_name):
 
 def get_sequences_list(patent, seq_listing):
     sequences_list = []
-    for mentioned_residue in patent.mentinedResidues:
+    for mentioned_residue in patent.mentionedResidues:
         seq = mentioned_residue['seqId']
         seq_value = seq_listing.sequences[int(seq) - 1]
         seq_obj = {}
@@ -123,8 +123,8 @@ def persist_doc_records(patent, seq_listing, protein_name):
             'docId': patent.patentNumber,
             'patentName': patent.patentName,
             'proteinId': protein_name,
-            'mentinedResidues': patent.mentinedResidues,
-            'sequences': get_sequences_list(patent, seq_listing),
+            'mentioned': json.dumps(patent.mentionedResidues),
+            'sequences': json.dumps(get_sequences_list(patent, seq_listing)),
             'applicants': ' '.join(patent.applicants),
             'patentAssignees': ' '.join(patent.patentAssignees),
             'inventors': ' '.join(patent.inventors),
