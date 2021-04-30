@@ -15,6 +15,7 @@ MOCK_BUCKET_NAME = 'mock-bucket'
 MOCK_OBJECT_NAME = 'protein/mock-patent.pdf'
 
 def mock_test():
+    assert 1 == 1
     print("ok")
 # @pytest.fixture(scope='function')
 # def aws_credentials():
