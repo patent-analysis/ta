@@ -83,7 +83,7 @@ class Patent:
         # TODO: ENHANCE
         #Regex
         regex_patterns = [re.compile(p) for p in patterns]
-        self.mentinedResidues = []
+        self.mentionedResidues = []
         # TODO: Handle negation
         claims_sentences = self.claims.split('.')
         claimsMatchDict = {}
@@ -131,9 +131,9 @@ class Patent:
             seq_object['location'] = 'claim'
             for claimed_residue in claimsMatchDict[seq_no]:
                 seq_object['claimedResidues'].append(claimed_residue)
-            self.mentinedResidues.append(seq_object)
+            self.mentionedResidues.append(seq_object)
 
-        print(self.mentinedResidues)
+        print(self.mentionedResidues)
 
         #------------- old impl
         # lines = iter(self.claims)

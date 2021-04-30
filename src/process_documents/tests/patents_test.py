@@ -20,7 +20,7 @@ def test_xml_parsing_1():
 def test_claimed_residues1():
     patent = Patent(mock_xml_document1,'US8828405B2')
     # This is correct, no claims for this patent
-    assert patent.mentinedResidues == []
+    assert patent.mentionedResidues == []
 
 def test_xml_parsing_2():
     patent = Patent(mock_xml_document2,'US10787484')
@@ -29,4 +29,4 @@ def test_xml_parsing_2():
 def test_claimed_residues():
     patent = Patent(mock_xml_document2,'US10787484')
     # TODO: update with expected residues...
-    assert patent.mentinedResidues != []
+    assert patent.mentionedResidues != []
