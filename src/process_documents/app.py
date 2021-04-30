@@ -135,7 +135,7 @@ def persist_doc_records(patent, seq_listing, protein_name):
             'claimsCount': patent.claimsCount,
             'sequenceCount': '',
             'patentFileDate': '',
-            'createdDate': datetime.datetime.now(),
+            'createdDate': datetime.datetime.now().isoformat(),
             'patentDocPath': ''
         }
     )
