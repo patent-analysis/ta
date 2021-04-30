@@ -14,8 +14,8 @@ mock_event = json.load(mock_event_data)
 MOCK_BUCKET_NAME = 'mock-bucket'
 MOCK_OBJECT_NAME = 'protein/mock-patent.pdf'
 
-def mock_test():
-    print("ok")
+def test():
+    assert 1 == 1
 # @pytest.fixture(scope='function')
 # def aws_credentials():
 #     """Mocked AWS Credentials"""
