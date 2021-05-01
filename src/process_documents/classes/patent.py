@@ -88,8 +88,11 @@ class Patent:
         self.mentionedResidues = []
         # TODO: Handle negation
         claims_sentences = self.claims.split('.')
+        description_sentences = self.description.split('.')
         claimsMatchDict = {}
-
+        descriptionMatchDict = {}
+        
+        #--------------------- PARSE THE CLAIMS --------------------- #
         for sentence in claims_sentences:
             for pattern in patterns:
                 match = re.search(pattern, sentence)
@@ -122,7 +125,7 @@ class Patent:
                         for num in re.finditer(epitope_numbers_regex, full_match):
                             claimsMatchDict[matching_seq_id_no][num.group(2)] = True
                             
-        logger.info(claimsMatchDict)
+        # logger.info(claimsMatchDict)
         
         for seq_no in claimsMatchDict.keys():
             seq_object = {}
@@ -132,71 +135,50 @@ class Patent:
             for claimed_residue in claimsMatchDict[seq_no]:
                 seq_object['claimedResidues'].append(claimed_residue)
             self.mentionedResidues.append(seq_object)
+
+        #--------------------- PARSE THE DESCRIPTION --------------------- #
+
         self.mentionedResiduesCount = len(self.mentionedResidues)
+        for sentence in description_sentences:
+            for pattern in patterns:
+                match = re.search(pattern, sentence)
+                if match:
+                    full_match = match.group(0)
+                    sequence_id_regex = r'(SEQ ID NO[:]?\s?)([0-9]{1,5})'
+                    matching_seq_id_no = re.search(sequence_id_regex, full_match).group(2)
+                    if matching_seq_id_no not in descriptionMatchDict:
+                        descriptionMatchDict[matching_seq_id_no] = {}
+                    # get the epitope sequences
+                    epitope_seq_ranges = [r'([A-Z])?([0-9]{1,5})(-|([\s]?to[\s]?))([A-Z])?([0-9]{1,5})',
+                                          r'(between\s)?([A-Z])?([0-9]{1,5})\s(and)\s([A-Z])?([0-9]{1,5})',
+                                          r'(from\s)?([A-Z])?([0-9]{1,5})\s(to)\s([A-Z])?([0-9]{1,5})'
+                                        ]
+                    epitope_numbers_statements = [r'([A-Z])?([0-9]{1,5})(\s|,|and)?([A-Z])?([0-9]{1,5})?(?=.*SEQ)']
+                    for range_regex in epitope_seq_ranges:
+                         # group 2 and group 6
+                         # TODO: Iterate from the small range to the large range
+                        ranges = re.search(range_regex, full_match)
+                        if ranges == None:
+                            continue
+                        descriptionMatchDict[matching_seq_id_no][ranges.group(2)] = True
+                        descriptionMatchDict[matching_seq_id_no][ranges.group(6)] = True
+                    
+                    for epitope_numbers_regex in epitope_numbers_statements:
+                         # group 2 and group 6
+                         # TODO: Iterate from the small range to the large range
+                        ranges = re.search(epitope_numbers_regex, full_match)
+                        # 
+                        for num in re.finditer(epitope_numbers_regex, full_match):
+                            descriptionMatchDict[matching_seq_id_no][num.group(2)] = True
+                            
+        # logger.info(descriptionMatchDict)
         
-        # print(self.mentionedResidues)
-
-        #------------- old impl
-        # lines = iter(self.claims)
-        # self.claimedResidues.append()
-        #Claimed as string
-        # for claimed in lines:
-        #     #Find the required sentence with epitope info
-        #     sentenceToEvaluate = ''
-        #     for regex in bindingPattern:
-        #         if re.findall(regex, claimed):
-        #             sentenceToEvaluate = re.findall(regex, claimed)
-            
-        #     #If pattern not found - return
-        #     if not sentenceToEvaluate:
-        #         next(lines, None)
-        #         continue
-            
-        #     sequencesDict = dict.fromkeys(keysForSequences)
-        #     sentenceToEvaluate = ','.join(str(v) for v in sentenceToEvaluate)
-            
-        #     #Extract Seq ID
-        #     extractedSeqID = ''.join(sentenceToEvaluate)
-        #     if re.search(r'\bresidues\b', extractedSeqID):
-        #         extractedSeqID = extractedSeqID.split("SEQ ID NO:")[1].split(".")[0].strip()
-        #         extractedSeqID = extractedSeqID.split(",")[0].strip()
-        #     else:
-        #         extractedSeqID = extractedSeqID.split("(SEQ ID NO:")[1].split(").")[0].strip()
-
-        #     listings = extractedSeqID.split()
-        #     for l in listings:
-        #         if l.isdigit():
-        #             sequencesDict["seqNoId"] = l
-            
-        #     sequencesDict["values"] = []
-            
-        #     #Extract string with residues info
-        #     extractedString = ''.join(sentenceToEvaluate)
-        #     if re.search(r'\bresidues\b', extractedString):
-        #         extractedString = extractedString.split("residues")[1].split("SEQ ID")[0]
-        #     else:
-        #         extractedString = extractedString.split("residue")[1].split("SEQ ID")[0]
-        #     words = extractedString.split()
-        #     for i in words:
-        #         i = i.replace(',','')
-        #         #if punctuation
-        #         if i in string.punctuation:
-        #             i = i.replace(':','')
-        #         #if range of sequences
-        #         elif i.find("-") != -1:
-        #             rangeList = i.split("-")
-        #             for n in range(int(rangeList[0]), int(rangeList[-1]) + 1):
-        #                 valuesDict = dict.fromkeys(keysForValues)
-        #                 valuesDict["num"] = int(n)
-        #                 sequencesDict["values"].append(valuesDict)
-        #         #if mix of letters and digits
-        #         elif (i.isalpha() == False) and (i.isdigit() == False) and (len(i) < 5 ):
-        #             i = i[1:]
-        #             valuesDict = dict.fromkeys(keysForValues)
-        #             valuesDict["num"] = int(i)
-        #             sequencesDict["values"].append(valuesDict)
-        #         #if digital
-        #         elif i.isdigit():
-        #             valuesDict = dict.fromkeys(keysForValues)
-        #             valuesDict["num"] = int(i)
-        #             sequencesDict["values"].append(valuesDict)
+        for seq_no in descriptionMatchDict.keys():
+            seq_object = {}
+            seq_object['seqId'] = seq_no
+            seq_object['claimedResidues'] = []
+            seq_object['location'] = 'description'
+            for claimed_residue in descriptionMatchDict[seq_no]:
+                seq_object['claimedResidues'].append(claimed_residue)
+            self.mentionedResidues.append(seq_object)
+        logger.info(self.mentionedResidues)
