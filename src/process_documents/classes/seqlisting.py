@@ -2,6 +2,7 @@ import string
 import re
 import xml.etree.ElementTree as et
 import logging
+from string import digits
 
 logger = logging.getLogger()
 logger.setLevel(logging.INFO)
@@ -28,19 +29,32 @@ class SeqListing:
         sequencesRaw = find_all(root, './/s400')
         self.sequences = []
         for seq in sequencesRaw:
-            from string import digits
             remove_digits = str.maketrans('', '', digits)
             sequence = seq.translate(remove_digits)
             sequence = sequence.replace(" ", "")
             self.sequences.append(sequence)
 
-        self.seqCount = len(self.sequences)
-        # try parsing the new format
+        # try parsing the new seq_listing format
         if(len(self.sequences) == 0):
             entries = find_all(root, './/entry')
+            full_table_text = ''
             for entry in entries:
-                if entry == None or entry == '' or '<' in entry or '0' in entry or '1' in entry or entry.startswith(" "):
-                    continue;
-                sequence = entry
+                if entry != None:
+                    full_table_text += entry
+            
+            # split by the 210 to segments
+            segments = full_table_text.split('<210>')
+
+            for segment in segments:
+                txt = re.findall(r"(?:SEQUENCE:)([\s\w\W]+)", segment)                                
+                if len(txt) == 0:
+                    continue
+                full_seq = ''
+                for seq in txt:
+                    full_seq+=seq
+
+                remove_digits = str.maketrans('', '', digits)
+                sequence = full_seq.translate(remove_digits)
+                sequence = sequence.replace(" ", "")
                 self.sequences.append(sequence)
-        self.seqCount = len(self.sequences)
+            # print(self.sequences)

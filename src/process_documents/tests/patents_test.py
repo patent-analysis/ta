@@ -25,6 +25,7 @@ def test_claimed_residues1():
 def test_xml_parsing_2():
     patent = Patent(mock_xml_document2,'US10787484')
     assert patent.applicants == 'Genentech, Inc.'
+    assert patent.inventors == 'Maureen Beresini, Daniel Burdick, Charles Eigenbrot, Jr., Daniel Kirchhofer, Robert Lazarus, Wei Li, John Quinn, Nicholas Skelton, Mark Ultsch, Yingnan Zhang'
 
 def test_claimed_residues():
     patent = Patent(mock_xml_document2,'US10787484')
