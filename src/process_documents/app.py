@@ -177,7 +177,7 @@ def lambda_handler(event, context):
         result = 'Success'
         if patent and seq_listing:
             logger.info("Patent Name: " + patent.patentName)
-            logger.info("SeqListing count: " + str(seq_listing.seqCount))
+            logger.info("SeqListing count: " + str(seq_listing.mentionedResiduesCount))
             persist_doc_records(patent, seq_listing, protein_name)
             return result
         else:
