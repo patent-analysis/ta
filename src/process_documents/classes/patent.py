@@ -27,7 +27,9 @@ def find_all(tree, element):
     elements = tree.findall(element)
     res = []
     for elem in elements:
-        res.append(elem.text)
+        if elem.text != None:
+            res.append(elem.text)
+        
     return ', '.join(res)
 
 def find_names(tree, parent):
@@ -133,7 +135,7 @@ class Patent:
                 seq_object['claimedResidues'].append(claimed_residue)
             self.mentionedResidues.append(seq_object)
 
-        print(self.mentionedResidues)
+        # print(self.mentionedResidues)
 
         #------------- old impl
         # lines = iter(self.claims)
