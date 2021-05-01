@@ -70,7 +70,7 @@ class Patent:
         self.applicants += find_names(root, './/us-applicant')
         
         self.examiners = find_names(root, './/primary-examiner')
-        self.claimsCount = len(self.claims)
+        self.claimsCount = find(root, './/number-of-claims')
         self.appNumber = find_all_nested(root, './/application-reference', './/doc-number')
         self.appDate = find_all_nested(root, './/application-reference', './/date')
 
@@ -122,8 +122,6 @@ class Patent:
                         for num in re.finditer(epitope_numbers_regex, full_match):
                             claimsMatchDict[matching_seq_id_no][num.group(2)] = True
                             
-
-
         logger.info(claimsMatchDict)
         
         for seq_no in claimsMatchDict.keys():
@@ -134,7 +132,8 @@ class Patent:
             for claimed_residue in claimsMatchDict[seq_no]:
                 seq_object['claimedResidues'].append(claimed_residue)
             self.mentionedResidues.append(seq_object)
-
+        self.mentionedResiduesCount = len(self.mentionedResidues)
+        
         # print(self.mentionedResidues)
 
         #------------- old impl
