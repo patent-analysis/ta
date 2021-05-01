@@ -117,6 +117,10 @@ def persist_doc_records(patent, seq_listing, protein_name):
     biomolecules_table = dynamodb.Table('bioMolecules-dev')
     # Extract patent data from the response and persist to patents_table
     # TODO: Add the claimed seq id nos and the actual sequences to this object
+    # TODO: fix the text font!
+    logger.info('The patent object is {}'.format(json.dumps(patent)))
+    logger.info('The seq_listing object is {}'.format(json.dumps(seq_listing)))
+    logger.info('The patent sequences to save to the db are {}'.format(json.dumps(get_sequences_list(patent, seq_listing))))
     logger.info('The patent sequences to save to the db are {}'.format(json.dumps(get_sequences_list(patent, seq_listing))))
     logger.info('The patent mentionedResidues to save to the db are {}'.format(json.dumps(patent.mentionedResidues)))
 
