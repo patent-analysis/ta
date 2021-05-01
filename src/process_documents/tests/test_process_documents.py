@@ -16,6 +16,7 @@ MOCK_OBJECT_NAME = 'protein/mock-patent.pdf'
 
 def test():
     assert 1 == 1
+    
 # @pytest.fixture(scope='function')
 # def aws_credentials():
 #     """Mocked AWS Credentials"""
