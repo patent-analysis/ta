@@ -33,4 +33,14 @@ class SeqListing:
             sequence = seq.translate(remove_digits)
             sequence = sequence.replace(" ", "")
             self.sequences.append(sequence)
+
+        self.seqCount = len(self.sequences)
+        # try parsing the new format
+        if(len(self.sequences) == 0):
+            entries = find_all(root, './/entry')
+            for entry in entries:
+                if entry == None or entry == '' or '<' in entry or '0' in entry or '1' in entry or entry.startswith(" "):
+                    continue;
+                sequence = entry
+                self.sequences.append(sequence)
         self.seqCount = len(self.sequences)
