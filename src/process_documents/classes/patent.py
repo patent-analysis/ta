@@ -40,7 +40,8 @@ def find_names(tree, parent):
         last = parent.find('.//last-name')
         if first == None or last == None:
             continue
-        res.append(first.text + ' '+ last.text)
+        full_name = first.text + ' ' + last.text
+        res.append(full_name)
     return ', '.join(res)       
 
 
