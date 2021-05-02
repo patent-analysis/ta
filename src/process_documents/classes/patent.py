@@ -69,6 +69,13 @@ class Patent:
 
         self.applicants = find_all_nested(root, './/us-applicant', './/orgname')
         self.applicants += find_names(root, './/us-applicant')
+        # for application docs, applicants and inventors are in the applicants node instead of the us-applicants node
+        if self.applicants == '':
+            self.applicants = find_names(root, './/applicant')
+        if self.inventors == '':
+            self.inventors = self.applicants
+
+
         
         self.examiners = find_names(root, './/primary-examiner')
         self.claimsCount = find(root, './/number-of-claims')
