@@ -81,7 +81,8 @@ class Patent:
         patterns = [
             r'''([^.]*?antibody(.*)binds(.*)residues[^.]*\.)''',
             r'''([^.]*?antibody(.*)binds(.*)residue[^.]*\.)''',
-            r'((epitope[s\s])(.{0,250})(residue[s|\s])(.{0,250})(([A-Z][0-9]{1,5})+(,|and|to|\s?)?([A-Z][0-9]{1,5})?)+(.{0,30})(SEQ ID NO: ([0-9])))',
+            r'((epitope[s\s])(.{0,250})(residue[s|\s])(.{0,250})(([A-Z][0-9]{1,5})+(,|and|to|\s?)?([A-Z][0-9]{1,5})?)+(.{0,30})(SEQ ID NO:\s?([0-9])))',
+            r'((bind[s\s])(.{0,250})(residue[s|\s])(.{0,250})(([A-Z][0-9]{1,5})+(,|and|to|\s?)?([A-Z][0-9]{1,5})?)+(.{0,30})(SEQ ID NO:\s?([0-9])))'
         ]
         # TODO: ENHANCE
         #Regex
@@ -108,7 +109,7 @@ class Patent:
                                           r'(between\s)?([A-Z])?([0-9]{1,5})\s(and)\s([A-Z])?([0-9]{1,5})',
                                           r'(from\s)?([A-Z])?([0-9]{1,5})\s(to)\s([A-Z])?([0-9]{1,5})'
                                         ]
-                    epitope_numbers_statements = [r'([A-Z])?([0-9]{1,5})(\s|,|and)?([A-Z])?([0-9]{1,5})?(?=.*SEQ)']
+                    epitope_numbers_statements = [r'\s([A-Z])?([0-9]{1,5})(\s|,|and)?([A-Z])?([0-9]{1,5})?(?=.*SEQ)']
                     for range_regex in epitope_seq_ranges:
                          # group 2 and group 6
                          # TODO: Iterate from the small range to the large range
@@ -154,7 +155,7 @@ class Patent:
                                           r'(between\s)?([A-Z])?([0-9]{1,5})\s(and)\s([A-Z])?([0-9]{1,5})',
                                           r'(from\s)?([A-Z])?([0-9]{1,5})\s(to)\s([A-Z])?([0-9]{1,5})'
                                         ]
-                    epitope_numbers_statements = [r'([A-Z])?([0-9]{1,5})(\s|,|and)?([A-Z])?([0-9]{1,5})?(?=.*SEQ)']
+                    epitope_numbers_statements = [r'\s([A-Z])?([0-9]{1,5})(\s|,|and)?([A-Z])?([0-9]{1,5})?(?=.*SEQ)']
                     for range_regex in epitope_seq_ranges:
                          # group 2 and group 6
                          # TODO: Iterate from the small range to the large range
@@ -183,3 +184,6 @@ class Patent:
                 seq_object['claimedResidues'].append(claimed_residue)
             self.mentionedResidues.append(seq_object)
         logger.info(self.mentionedResidues)
+
+
+# TODO ADD THE MATCH SENTENCES
