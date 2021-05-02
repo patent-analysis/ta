@@ -111,13 +111,14 @@ def get_sequences_list(patent, seq_listing):
         sequences_list.append(seq_obj)
     return sequences_list
 
-def persist_doc_records(patent, seq_listing, protein_name):
+def persist_doc_records(patent, seq_listing, protein_name, object_key):
     # TODO: FIX THE TABLE NAMES
     patents_table = dynamodb.Table('patents-dev')
     biomolecules_table = dynamodb.Table('bioMolecules-dev')
     # Extract patent data from the response and persist to patents_table
     # TODO: Add the claimed seq id nos and the actual sequences to this object
     # TODO: fix the text font!
+    # TODO: Update the hardcoded bucket url
 
     patents_table.put_item(
         Item={
@@ -139,7 +140,7 @@ def persist_doc_records(patent, seq_listing, protein_name):
             'sequenceCount': len(seq_listing.sequences),
             'patentFileDate': patent.patentDate,
             'createdDate': datetime.datetime.now().isoformat(),
-            'patentDocPath': '',
+            'patentDocPath': 'https://psv-document-storage.s3.amazonaws.com/' + object_key,
             'legalOpinion': ''
         }
     )
@@ -174,7 +175,7 @@ def lambda_handler(event, context):
         if patent and seq_listing:
             logger.info("Patent Name: " + patent.patentName)
             logger.info("SeqListing count: " + str(patent.mentionedResiduesCount))
-            persist_doc_records(patent, seq_listing, protein_name)
+            persist_doc_records(patent, seq_listing, protein_name, object_key)
             return result
         else:
             result = ''
