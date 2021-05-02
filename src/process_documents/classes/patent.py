@@ -82,7 +82,8 @@ class Patent:
             r'''([^.]*?antibody(.*)binds(.*)residues[^.]*\.)''',
             r'''([^.]*?antibody(.*)binds(.*)residue[^.]*\.)''',
             r'((epitope[s\s])(.{0,250})(residue[s|\s])(.{0,250})(([A-Z][0-9]{1,5})+(,|and|to|\s?)?([A-Z][0-9]{1,5})?)+(.{0,30})(SEQ ID NO:\s?([0-9])))',
-            r'((bind[s\s])(.{0,250})(residue[s|\s])(.{0,250})(([A-Z][0-9]{1,5})+(,|and|to|\s?)?([A-Z][0-9]{1,5})?)+(.{0,30})(SEQ ID NO:\s?([0-9])))'
+            r'((bind[s\s])(.{0,250})(residue[s|\s])(.{0,250})(([A-Z][0-9]{1,5})+(,|and|to|\s?)?([A-Z][0-9]{1,5})?)+(.{0,30})(SEQ ID NO:\s?([0-9])))',
+            r'((bind[s\s])(.{0,250})(residue[s|\s])(.{0,250})(([A-Z]?[0-9]{1,5})+(,|and|to|\s|-)?([A-Z]?[0-9]{1,5})?)+(.{0,30})(SEQ ID NO:\s?([0-9])))'
         ]
         # TODO: ENHANCE
         #Regex
@@ -111,19 +112,13 @@ class Patent:
                                         ]
                     epitope_numbers_statements = [r'\s([A-Z])?([0-9]{1,5})(\s|,|and)?([A-Z])?([0-9]{1,5})?(?=.*SEQ)']
                     for range_regex in epitope_seq_ranges:
-                         # group 2 and group 6
-                         # TODO: Iterate from the small range to the large range
                         ranges = re.search(range_regex, full_match)
                         if ranges == None:
                             continue
-                        claimsMatchDict[matching_seq_id_no][ranges.group(2)] = True
-                        claimsMatchDict[matching_seq_id_no][ranges.group(6)] = True
-                    
+                        for val in range(int(ranges.group(2)), int(ranges.group(6))):
+                            claimsMatchDict[matching_seq_id_no][str(val)] = True
+
                     for epitope_numbers_regex in epitope_numbers_statements:
-                         # group 2 and group 6
-                         # TODO: Iterate from the small range to the large range
-                        ranges = re.search(epitope_numbers_regex, full_match)
-                        # 
                         for num in re.finditer(epitope_numbers_regex, full_match):
                             claimsMatchDict[matching_seq_id_no][num.group(2)] = True
                             
@@ -157,23 +152,16 @@ class Patent:
                                         ]
                     epitope_numbers_statements = [r'\s([A-Z])?([0-9]{1,5})(\s|,|and)?([A-Z])?([0-9]{1,5})?(?=.*SEQ)']
                     for range_regex in epitope_seq_ranges:
-                         # group 2 and group 6
-                         # TODO: Iterate from the small range to the large range
                         ranges = re.search(range_regex, full_match)
                         if ranges == None:
                             continue
-                        descriptionMatchDict[matching_seq_id_no][ranges.group(2)] = True
-                        descriptionMatchDict[matching_seq_id_no][ranges.group(6)] = True
-                    
+                        for val in range(int(ranges.group(2)), int(ranges.group(6))):
+                            descriptionMatchDict[matching_seq_id_no][str(val)] = True
+
                     for epitope_numbers_regex in epitope_numbers_statements:
-                         # group 2 and group 6
-                         # TODO: Iterate from the small range to the large range
-                        ranges = re.search(epitope_numbers_regex, full_match)
-                        # 
                         for num in re.finditer(epitope_numbers_regex, full_match):
                             descriptionMatchDict[matching_seq_id_no][num.group(2)] = True
                             
-        # logger.info(descriptionMatchDict)
         
         for seq_no in descriptionMatchDict.keys():
             seq_object = {}
