@@ -15,8 +15,8 @@ def test_xml_parsing_1():
     assert patent.inventors == 'Andrew David Bacon, Peter Laing, Gregory Gregoriadis, Wilson Romero Caparros-Wanderley'
     assert patent.examiners == 'Shin Lin Chen'
     assert patent.appNumber == '13292778'
-    assert patent.appDate == '20111109'
-    assert patent.patentDate == '20140909'
+    assert patent.appDate == '2011-11-09T00:00:00'
+    assert patent.patentDate == '2014-09-09T00:00:00'
     assert '1. A composition for generating an immune response in a mammal, wherein said' in patent.claims
     assert 'This application is a continuation of U.S. application Ser' in  patent.description
     assert 'A composition comprising liposomes a' in patent.abstract

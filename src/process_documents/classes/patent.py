@@ -2,6 +2,7 @@ import string
 import re
 import xml.etree.ElementTree as et
 import logging
+import datetime
 logger = logging.getLogger()
 logger.setLevel(logging.INFO)
 
@@ -42,7 +43,7 @@ def find_names(tree, parent):
             continue
         full_name = first.text + ' ' + last.text
         res.append(full_name)
-    return ', '.join(res)       
+    return ', '.join(res)   
 
 
 class Patent:
@@ -60,7 +61,8 @@ class Patent:
         logger.info('processing xml file {}'.format(self.full_document_path))
     
         self.patentName = find(root, './/invention-title')
-        self.patentDate = find_all_nested(root, './/publication-reference', './/date')
+        p_date = find_all_nested(root, './/publication-reference', './/date')
+        self.patentDate = datetime.datetime.strptime(p_date, '%Y%m%d').isoformat()
         self.abstract = find_all_nested(root, './/abstract', './/p')
         self.description = find_all_nested(root, './/description', './/p')
         self.claims = find_all(root, './/claim-text')
@@ -75,12 +77,12 @@ class Patent:
         if self.inventors == '':
             self.inventors = self.applicants
 
-
         
         self.examiners = find_names(root, './/primary-examiner')
         self.claimsCount = find(root, './/number-of-claims')
         self.appNumber = find_all_nested(root, './/application-reference', './/doc-number')
-        self.appDate = find_all_nested(root, './/application-reference', './/date')
+        app_date = find_all_nested(root, './/application-reference', './/date')
+        self.appDate = datetime.datetime.strptime(app_date, '%Y%m%d').isoformat()
 
 
     #Extract epitope information
