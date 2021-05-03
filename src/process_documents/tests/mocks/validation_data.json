@@ -1,0 +1,12 @@
+[
+    {
+        "patentNumber": "US8889144B2",
+        "patentName": "PCSK9 VACCINE",
+        "mentionedResidues": []
+    },
+    {
+        "patentNumber": "US10787484B2",
+        "patentName": "Compositions and methods for treating cardiovascular disease",
+        "mentionedResidues": ["241", "339", "343", "364", "442", "443", "444"]
+    }
+]
