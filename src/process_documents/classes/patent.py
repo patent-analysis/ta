@@ -2,6 +2,7 @@ import string
 import re
 import xml.etree.ElementTree as et
 import logging
+import datetime
 logger = logging.getLogger()
 logger.setLevel(logging.INFO)
 
@@ -40,8 +41,9 @@ def find_names(tree, parent):
         last = parent.find('.//last-name')
         if first == None or last == None:
             continue
-        res.append(first.text + ' '+ last.text)
-    return ', '.join(res)       
+        full_name = first.text + ' ' + last.text
+        res.append(full_name)
+    return ', '.join(res)   
 
 
 class Patent:
@@ -59,7 +61,8 @@ class Patent:
         logger.info('processing xml file {}'.format(self.full_document_path))
     
         self.patentName = find(root, './/invention-title')
-        self.patentDate = find_all_nested(root, './/publication-reference', './/date')
+        p_date = find_all_nested(root, './/publication-reference', './/date')
+        self.patentDate = datetime.datetime.strptime(p_date, '%Y%m%d').isoformat()
         self.abstract = find_all_nested(root, './/abstract', './/p')
         self.description = find_all_nested(root, './/description', './/p')
         self.claims = find_all(root, './/claim-text')
@@ -68,11 +71,18 @@ class Patent:
 
         self.applicants = find_all_nested(root, './/us-applicant', './/orgname')
         self.applicants += find_names(root, './/us-applicant')
+        # for application docs, applicants and inventors are in the applicants node instead of the us-applicants node
+        if self.applicants == '':
+            self.applicants = find_names(root, './/applicant')
+        if self.inventors == '':
+            self.inventors = self.applicants
+
         
         self.examiners = find_names(root, './/primary-examiner')
         self.claimsCount = find(root, './/number-of-claims')
         self.appNumber = find_all_nested(root, './/application-reference', './/doc-number')
-        self.appDate = find_all_nested(root, './/application-reference', './/date')
+        app_date = find_all_nested(root, './/application-reference', './/date')
+        self.appDate = datetime.datetime.strptime(app_date, '%Y%m%d').isoformat()
 
 
     #Extract epitope information
@@ -80,7 +90,9 @@ class Patent:
         patterns = [
             r'''([^.]*?antibody(.*)binds(.*)residues[^.]*\.)''',
             r'''([^.]*?antibody(.*)binds(.*)residue[^.]*\.)''',
-            r'((epitope[s\s])(.{0,250})(residue[s|\s])(.{0,250})(([A-Z][0-9]{1,5})+(,|and|to|\s?)?([A-Z][0-9]{1,5})?)+(.{0,30})(SEQ ID NO: ([0-9])))',
+            r'((epitope[s\s])(.{0,250})(residue[s|\s])(.{0,250})(([A-Z][0-9]{1,5})+(,|and|to|\s?)?([A-Z][0-9]{1,5})?)+(.{0,30})(SEQ ID NO:\s?([0-9])))',
+            r'((bind[s\s])(.{0,250})(residue[s|\s])(.{0,250})(([A-Z][0-9]{1,5})+(,|and|to|\s?)?([A-Z][0-9]{1,5})?)+(.{0,30})(SEQ ID NO:\s?([0-9])))',
+            r'((bind[s\s])(.{0,250})(residue[s|\s])(.{0,250})(([A-Z]?[0-9]{1,5})+(,|and|to|\s|-)?([A-Z]?[0-9]{1,5})?)+(.{0,30})(SEQ ID NO:\s?([0-9])))'
         ]
         # TODO: ENHANCE
         #Regex
@@ -107,21 +119,15 @@ class Patent:
                                           r'(between\s)?([A-Z])?([0-9]{1,5})\s(and)\s([A-Z])?([0-9]{1,5})',
                                           r'(from\s)?([A-Z])?([0-9]{1,5})\s(to)\s([A-Z])?([0-9]{1,5})'
                                         ]
-                    epitope_numbers_statements = [r'([A-Z])?([0-9]{1,5})(\s|,|and)?([A-Z])?([0-9]{1,5})?(?=.*SEQ)']
+                    epitope_numbers_statements = [r'\s([A-Z])?([0-9]{1,5})(\s|,|and)?([A-Z])?([0-9]{1,5})?(?=.*SEQ)']
                     for range_regex in epitope_seq_ranges:
-                         # group 2 and group 6
-                         # TODO: Iterate from the small range to the large range
                         ranges = re.search(range_regex, full_match)
                         if ranges == None:
                             continue
-                        claimsMatchDict[matching_seq_id_no][ranges.group(2)] = True
-                        claimsMatchDict[matching_seq_id_no][ranges.group(6)] = True
-                    
+                        for val in range(int(ranges.group(2)), int(ranges.group(6))):
+                            claimsMatchDict[matching_seq_id_no][str(val)] = True
+
                     for epitope_numbers_regex in epitope_numbers_statements:
-                         # group 2 and group 6
-                         # TODO: Iterate from the small range to the large range
-                        ranges = re.search(epitope_numbers_regex, full_match)
-                        # 
                         for num in re.finditer(epitope_numbers_regex, full_match):
                             claimsMatchDict[matching_seq_id_no][num.group(2)] = True
                             
@@ -153,25 +159,18 @@ class Patent:
                                           r'(between\s)?([A-Z])?([0-9]{1,5})\s(and)\s([A-Z])?([0-9]{1,5})',
                                           r'(from\s)?([A-Z])?([0-9]{1,5})\s(to)\s([A-Z])?([0-9]{1,5})'
                                         ]
-                    epitope_numbers_statements = [r'([A-Z])?([0-9]{1,5})(\s|,|and)?([A-Z])?([0-9]{1,5})?(?=.*SEQ)']
+                    epitope_numbers_statements = [r'\s([A-Z])?([0-9]{1,5})(\s|,|and)?([A-Z])?([0-9]{1,5})?(?=.*SEQ)']
                     for range_regex in epitope_seq_ranges:
-                         # group 2 and group 6
-                         # TODO: Iterate from the small range to the large range
                         ranges = re.search(range_regex, full_match)
                         if ranges == None:
                             continue
-                        descriptionMatchDict[matching_seq_id_no][ranges.group(2)] = True
-                        descriptionMatchDict[matching_seq_id_no][ranges.group(6)] = True
-                    
+                        for val in range(int(ranges.group(2)), int(ranges.group(6))):
+                            descriptionMatchDict[matching_seq_id_no][str(val)] = True
+
                     for epitope_numbers_regex in epitope_numbers_statements:
-                         # group 2 and group 6
-                         # TODO: Iterate from the small range to the large range
-                        ranges = re.search(epitope_numbers_regex, full_match)
-                        # 
                         for num in re.finditer(epitope_numbers_regex, full_match):
                             descriptionMatchDict[matching_seq_id_no][num.group(2)] = True
                             
-        # logger.info(descriptionMatchDict)
         
         for seq_no in descriptionMatchDict.keys():
             seq_object = {}
@@ -182,3 +181,6 @@ class Patent:
                 seq_object['claimedResidues'].append(claimed_residue)
             self.mentionedResidues.append(seq_object)
         logger.info(self.mentionedResidues)
+
+
+# TODO ADD THE MATCH SENTENCES
