@@ -107,6 +107,7 @@ class Patent:
         
         #--------------------- PARSE THE CLAIMS --------------------- #
         for sentence in claims_sentences:
+            
             for pattern in patterns:
                 match = re.search(pattern, sentence)
                 if match:
@@ -159,7 +160,7 @@ class Patent:
                     full_match = match.group(0)
                     # logger.info('found match statement')
                     # logger.info(sentence)
-                    logger.info(full_match)
+                    # logger.info(full_match)
                     # logger.info(pattern)
                     sequence_id_regex = r'(SEQ ID NO[:]?\s?)([0-9]{1,5})'
                     matching_seq_id_no = re.search(sequence_id_regex, full_match).group(2)

@@ -17,7 +17,12 @@ mock_xml_document10 = os.path.join(os.path.dirname(os.path.abspath(__file__)), '
 mock_xml_document11 = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'mocks', 'US20100068199A1.xml') 
 mock_xml_document12 = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'mocks', 'US8062640B2.xml') 
 mock_xml_document13 = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'mocks', 'US8357371B2.xml') 
-
+mock_xml_document14 = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'mocks', 'US8501184B2.xml') 
+mock_xml_document15 = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'mocks', 'US9550837B2.xml') 
+mock_xml_document16 = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'mocks', 'US9724411B2.xml') 
+mock_xml_document17 = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'mocks', 'US10023654B2.xml') 
+mock_xml_document18 = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'mocks', 'US20100166768A1.xml') 
+mock_xml_document19 = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'mocks', 'US20120195910A1.xml') 
 
 
 def test_xml_parsing_1():
@@ -65,7 +70,6 @@ def test_claimed_residues_5():
     assert patent.inventors == patent.applicants
     assert patent.mentionedResidues != []  
 
-# @pytest.mark.slow
 def test_claimed_residues_6():
     patent = Patent(mock_xml_document6,'US8080243B2')
     assert patent.applicants == 'Hong Liang, Yasmina Noubia Abdiche, Javier Fernando Chaparro Riggers, Bruce Charles Gomes, Julie Jia Li Hawkins, Jaume Pons, Yuli Wang'
@@ -135,7 +139,6 @@ def test_claimed_residues_12():
     assert patent.mentionedResidues[0]['location'] == 'description'
     assert patent.mentionedResidues[0]['seqId'] == '755'
 
-@pytest.mark.slow
 def test_claimed_residues_13():
     patent = Patent(mock_xml_document13,'US8357371B2')
     assert patent.applicants == 'Mark W. Sleeman, Joel H. Martin, Tammy T. Huang, Douglas MacDonald, Gary Swergold'
@@ -145,3 +148,63 @@ def test_claimed_residues_13():
     assert len(patent.mentionedResidues[0]['claimedResidues']) == 395
     assert patent.mentionedResidues[0]['location'] == 'description'
     assert patent.mentionedResidues[0]['seqId'] == '755'
+
+def test_claimed_residues_14():
+    patent = Patent(mock_xml_document14,'US8501184B2')
+    assert patent.applicants == 'Mark W. Sleeman, Joel H. Martin, Tammy T. Huang, Douglas MacDonald'
+    assert patent.inventors == patent.applicants
+    assert patent.mentionedResidues != []
+    assert len(patent.mentionedResidues) == 1
+    assert len(patent.mentionedResidues[0]['claimedResidues']) == 395
+    assert patent.mentionedResidues[0]['location'] == 'description'
+    assert patent.mentionedResidues[0]['seqId'] == '755'
+
+def test_claimed_residues_15():
+    patent = Patent(mock_xml_document15,'US9550837B2')
+    assert patent.applicants == 'REGENERON PHARMACEUTICALS, INC.'
+    assert patent.inventors == 'Mark W. Sleeman, Joel H. Martin, Tammy T. Huang, Douglas MacDonald'
+    assert patent.mentionedResidues != []
+    assert len(patent.mentionedResidues) == 1
+    assert len(patent.mentionedResidues[0]['claimedResidues']) == 395
+    assert patent.mentionedResidues[0]['location'] == 'description'
+    assert patent.mentionedResidues[0]['seqId'] == '755'
+
+def test_claimed_residues_16():
+    patent = Patent(mock_xml_document16,'US9724411B2')
+    assert patent.applicants == 'Regeneron Pharmaceuticals, Inc.'
+    assert patent.inventors == 'Mark W. Sleeman, Joel H. Martin, Tammy T. Huang, Douglas MacDonald, Gary Swergold, Robert C. Pordy, William J. Sasiela'
+    assert patent.mentionedResidues != []
+    assert len(patent.mentionedResidues) == 1
+    assert len(patent.mentionedResidues[0]['claimedResidues']) == 395
+    assert patent.mentionedResidues[0]['location'] == 'description'
+    assert patent.mentionedResidues[0]['seqId'] == '755'
+
+def test_claimed_residues_17():
+    patent = Patent(mock_xml_document17,'US10023654B2')
+    assert patent.applicants == 'REGENERON PHARMACEUTICALS, INC.'
+    assert patent.inventors == 'Mark W. Sleeman, Joel H. Martin, Tammy T. Huang, Douglas MacDonald'
+    assert patent.mentionedResidues != []
+    assert len(patent.mentionedResidues) == 1
+    assert len(patent.mentionedResidues[0]['claimedResidues']) == 395
+    assert patent.mentionedResidues[0]['location'] == 'description'
+    assert patent.mentionedResidues[0]['seqId'] == '755'
+
+
+def test_claimed_residues_18():
+    patent = Patent(mock_xml_document18,'US20100166768A1')
+    assert patent.applicants == 'Mark W. Sleeman, Joel H. Martin, Tammy T. Huang, Douglas MacDonald'
+    assert patent.inventors == 'Mark W. Sleeman, Joel H. Martin, Tammy T. Huang, Douglas MacDonald'
+    assert patent.mentionedResidues != []
+    assert len(patent.mentionedResidues) == 1
+    assert len(patent.mentionedResidues[0]['claimedResidues']) == 395
+    assert patent.mentionedResidues[0]['location'] == 'description'
+    assert patent.mentionedResidues[0]['seqId'] == '755'
+
+# @pytest.mark.slow
+def test_claimed_residues_19():
+    patent = Patent(mock_xml_document19,'US20120195910A1')
+    assert patent.applicants == 'YAN WU, CECILIA CHIU, DANIEL KIRCHHOFER, ANDREW PETERSON, GANESH KOLUMAM, MONICA KONG BELTRAN, PAUL MORAN, WEI LI'
+    assert patent.inventors == patent.applicants
+    assert patent.mentionedResidues == []
+    # TODO: HARD PATENT
+    #  (b) detecting formation of a complex between the anti-PCSK9 antibody and the PCSK9 protein., (i) at least one residue selected from the group consisting of R194 and E195 of human PCSK9,, (ii) at least one residue selected from the group consisting of D238 and A239 of human PCSK9,, (iii) at least one residue selected from the group consisting of A341 and Q342 of human PCSK9, and, (iv) at least one residue selected from the group consisting of E366, D367, I369, S376, T377, C378, F379, S381 and H391 of human PCSK9.
