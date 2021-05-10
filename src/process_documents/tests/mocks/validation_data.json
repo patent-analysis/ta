@@ -1,12 +1,76 @@
 [
     {
+        "patentNumber": "US8062640B2",
+        "mentionedResidues": []
+    },
+    {
+        "patentNumber": "US8080243B2",
+        "mentionedResidues": []
+    },
+    {
+        "patentNumber": "US8188234B2",
+        "mentionedResidues": []
+    },
+    {
+        "patentNumber": "US8357371B2",
+        "mentionedResidues": []
+    },
+    {
+        "patentNumber": "US8399646B2",
+        "mentionedResidues": []
+    },
+    {
+        "patentNumber": "US8501184B2",
+        "mentionedResidues": []
+    },
+    {
+        "patentNumber": "US8563698B2",
+        "mentionedResidues": ["123", "124", "125", "126", "127", "128", "129", "130", "131", "132"]
+    },
+    {
+        "patentNumber": "US8829165B2",
+        "mentionedResidues": ["153", "154", "155", "194", "238", "239", "369", "372", "374", "375", "377", "378", "379", "380", "381"]
+    },
+    {
         "patentNumber": "US8889144B2",
         "patentName": "PCSK9 VACCINE",
         "mentionedResidues": []
     },
     {
+        "patentNumber": "US9175093B2",
+        "mentionedResidues": []
+    },
+    {
+        "patentNumber": "US9550837B2",
+        "mentionedResidues": []
+    },
+    {
+        "patentNumber": "US9724411B2",
+        "mentionedResidues": []
+    },
+    {
+        "patentNumber": "US10023654B2",
+        "mentionedResidues": ["238"]
+    },
+    {
         "patentNumber": "US10787484B2",
         "patentName": "Compositions and methods for treating cardiovascular disease",
         "mentionedResidues": ["241", "339", "343", "364", "442", "443", "444"]
+    },
+    {
+        "patentNumber": "US10822424B2",
+        "mentionedResidues": ["58", "100", "113", "114", "116", "117", "118", "119", "137", "138", "139", "140", "142", "143", "144", "145", "146", "162", "163", "165", "166", "167", "170", "189", "269", "270", "271", "272", "273", "284", "336", "337", "338", "341", "345"]
+    },
+    {
+        "patentNumber": "US20090246192A1",
+        "mentionedResidues": []
+    },
+    {
+        "patentNumber": "US20090326202A1",
+        "mentionedResidues": []
+    },
+    {
+        "patentNumber": "US8828405B2",
+        "mentionedResidues": []
     }
 ]
