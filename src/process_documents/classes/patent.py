@@ -43,7 +43,8 @@ def find_names(tree, parent):
             continue
         full_name = first.text + ' ' + last.text
         res.append(full_name)
-    return ', '.join(res)   
+    full_list = ', '.join(res)
+    return full_list
 
 
 class Patent:
@@ -90,10 +91,17 @@ class Patent:
         patterns = [
             r'''([^.]*?antibody(.*)binds(.*)residues[^.]*\.)''',
             r'''([^.]*?antibody(.*)binds(.*)residue[^.]*\.)''',
-            r'((epitope[s\s])(.{0,250})(residue[s|\s])(.{0,250})(([A-Z][0-9]{1,5})+(,|and|to|\s?)?([A-Z][0-9]{1,5})?)+(.{0,30})(SEQ ID NO:\s?([0-9])))',
-            r'((bind[s\s])(.{0,250})(residue[s|\s])(.{0,250})(([A-Z][0-9]{1,5})+(,|and|to|\s?)?([A-Z][0-9]{1,5})?)+(.{0,30})(SEQ ID NO:\s?([0-9])))',
-            r'((bind[s\s])(.{0,250})(residue[s|\s])(.{0,250})(([A-Z]?[0-9]{1,5})+(,|and|to|\s|-)?([A-Z]?[0-9]{1,5})?)+(.{0,30})(SEQ ID NO:\s?([0-9])))'
+            r'((epitope[s\s])(.{0,250})(residue[s|\s])(.{0,250})((([A-Za-z]{1,3})?[0-9]{1,5})+(,|and|to|\s?)?(([A-Za-z]{1,3})?[0-9]{1,5})?)+(.{0,30})(SEQ ID NO:\s?([0-9]{1,5})))',
+            r'((bind[s\s])(.{0,250})(residue[s|\s])(.{0,250})((([A-Za-z]{1,3})?[0-9]{1,5})+(,|and|to|\s?)?(([A-Za-z]{1,3})?[0-9]{1,5})?)+(.{0,30})(SEQ ID NO:\s?([0-9]{1,5})))',
+            r'((bind[s\s])(.{0,250})(residue[s|\s])(.{0,250})((([A-Za-z]{1,3})?[0-9]{1,5})+(,|and|to|\s|-)?(([A-Za-z]{1,3})?[0-9]{1,5})?)+(.{0,30})(SEQ ID NO:\s?([0-9]{1,5})))'
         ]
+        sequence_id_regex = r'(SEQ ID NO[:]?\s?)([0-9]{1,5})(?!.*(SEQ ID NO[:]?\s?)([0-9]{1,5}))'
+        epitope_seq_ranges = [r'([A-Za-z]{1,3})?([0-9]{1,5})(-|([\s]?to[\s]?))([A-Za-z]{1,3})?([0-9]{1,5})',
+                              r'(between\s)(.*)([A-Za-z]{1,3})?([0-9]{1,5})\s(and)\s([A-Za-z]{1,3})?([0-9]{1,5})',
+                              r'(from\s)?([A-Za-z]{1,3})?([0-9]{1,5})\s(to)\s([A-Za-z]{1,3})?([0-9]{1,5})'
+                            ]
+        epitope_numbers_statements = [r'\s([A-Za-z]{1,3})?([0-9]{1,5})(\s|,|and)?([A-Za-z]{1,3})?([0-9]{1,5})?(?=.*SEQ)']
+        
         # TODO: ENHANCE
         #Regex
         regex_patterns = [re.compile(p) for p in patterns]
@@ -103,6 +111,8 @@ class Patent:
         description_sentences = self.description.split('.')
         claimsMatchDict = {}
         descriptionMatchDict = {}
+        claimMentionStatements = {}
+        descriptionMatchStatements = {}
         
         #--------------------- PARSE THE CLAIMS --------------------- #
         for sentence in claims_sentences:
@@ -110,77 +120,99 @@ class Patent:
                 match = re.search(pattern, sentence)
                 if match:
                     full_match = match.group(0)
-                    sequence_id_regex = r'(SEQ ID NO[:]?\s?)([0-9]{1,5})'
+                    
                     matching_seq_id_no = re.search(sequence_id_regex, full_match).group(2)
                     if matching_seq_id_no not in claimsMatchDict:
                         claimsMatchDict[matching_seq_id_no] = {}
-                    # get the epitope sequences
-                    epitope_seq_ranges = [r'([A-Z])?([0-9]{1,5})(-|([\s]?to[\s]?))([A-Z])?([0-9]{1,5})',
-                                          r'(between\s)?([A-Z])?([0-9]{1,5})\s(and)\s([A-Z])?([0-9]{1,5})',
-                                          r'(from\s)?([A-Z])?([0-9]{1,5})\s(to)\s([A-Z])?([0-9]{1,5})'
-                                        ]
-                    epitope_numbers_statements = [r'\s([A-Z])?([0-9]{1,5})(\s|,|and)?([A-Z])?([0-9]{1,5})?(?=.*SEQ)']
+                        claimMentionStatements[matching_seq_id_no] = {}
+                    #  handle epitope number ranges
                     for range_regex in epitope_seq_ranges:
-                        ranges = re.search(range_regex, full_match)
+                        ranges = re.findall(range_regex, full_match)
                         if ranges == None:
                             continue
-                        for val in range(int(ranges.group(2)), int(ranges.group(6))):
-                            claimsMatchDict[matching_seq_id_no][str(val)] = True
-
+                        for epitope_range in ranges:
+                            range_start_str = epitope_range[1]
+                            if range_start_str.isnumeric() == False:
+                                range_start_str = epitope_range[2]
+                            range_end_str = epitope_range[5]
+                            if range_start_str == None or range_end_str == None:
+                                continue
+                            for val in range(int(range_start_str), int(range_end_str)):
+                                claimsMatchDict[matching_seq_id_no][str(val)] = True
+                    #  handle epitope number matches
                     for epitope_numbers_regex in epitope_numbers_statements:
                         for num in re.finditer(epitope_numbers_regex, full_match):
                             claimsMatchDict[matching_seq_id_no][num.group(2)] = True
-                            
-        # logger.info(claimsMatchDict)
+                    claimMentionStatements[matching_seq_id_no][full_match] = True;
         
         for seq_no in claimsMatchDict.keys():
             seq_object = {}
             seq_object['seqId'] = seq_no
             seq_object['claimedResidues'] = []
             seq_object['location'] = 'claim'
+            seq_object['statements'] = []
             for claimed_residue in claimsMatchDict[seq_no]:
                 seq_object['claimedResidues'].append(claimed_residue)
+            seq_object['claimedResidues'].sort()
+            match_statements = claimMentionStatements[seq_no]
+            for statement in match_statements.keys():
+                seq_object['statements'].append(statement)
+
             self.mentionedResidues.append(seq_object)
 
+        self.mentionedResiduesCount = len(self.mentionedResidues)
+      
         #--------------------- PARSE THE DESCRIPTION --------------------- #
 
-        self.mentionedResiduesCount = len(self.mentionedResidues)
         for sentence in description_sentences:
             for pattern in patterns:
                 match = re.search(pattern, sentence)
                 if match:
                     full_match = match.group(0)
-                    sequence_id_regex = r'(SEQ ID NO[:]?\s?)([0-9]{1,5})'
                     matching_seq_id_no = re.search(sequence_id_regex, full_match).group(2)
                     if matching_seq_id_no not in descriptionMatchDict:
                         descriptionMatchDict[matching_seq_id_no] = {}
-                    # get the epitope sequences
-                    epitope_seq_ranges = [r'([A-Z])?([0-9]{1,5})(-|([\s]?to[\s]?))([A-Z])?([0-9]{1,5})',
-                                          r'(between\s)?([A-Z])?([0-9]{1,5})\s(and)\s([A-Z])?([0-9]{1,5})',
-                                          r'(from\s)?([A-Z])?([0-9]{1,5})\s(to)\s([A-Z])?([0-9]{1,5})'
-                                        ]
-                    epitope_numbers_statements = [r'\s([A-Z])?([0-9]{1,5})(\s|,|and)?([A-Z])?([0-9]{1,5})?(?=.*SEQ)']
+                        descriptionMatchStatements[matching_seq_id_no] = {}
+                    #  handle epitope number ranges
                     for range_regex in epitope_seq_ranges:
-                        ranges = re.search(range_regex, full_match)
+                        ranges = re.findall(range_regex, full_match)
                         if ranges == None:
                             continue
-                        for val in range(int(ranges.group(2)), int(ranges.group(6))):
-                            descriptionMatchDict[matching_seq_id_no][str(val)] = True
-
+                        for epitope_range in ranges:
+                            range_start_str = epitope_range[1]
+                            if range_start_str.isnumeric() == False:
+                                range_start_str = epitope_range[2]
+                            range_end_str = epitope_range[5]
+                            if range_start_str == None or range_end_str == None or range_start_str == '' or range_end_str == '':
+                                continue
+                            # logger.info(range_start_str)
+                            # logger.info(range_end_str)
+                            # logger.info(epitope_range)
+                            for val in range(int(range_start_str), int(range_end_str) + 1):
+                                descriptionMatchDict[matching_seq_id_no][str(val)] = True
+                    #  handle epitope number matches
                     for epitope_numbers_regex in epitope_numbers_statements:
                         for num in re.finditer(epitope_numbers_regex, full_match):
                             descriptionMatchDict[matching_seq_id_no][num.group(2)] = True
+
+                    descriptionMatchStatements[matching_seq_id_no][full_match] = True;
                             
-        
         for seq_no in descriptionMatchDict.keys():
             seq_object = {}
             seq_object['seqId'] = seq_no
             seq_object['claimedResidues'] = []
             seq_object['location'] = 'description'
+            seq_object['statements'] = []
             for claimed_residue in descriptionMatchDict[seq_no]:
                 seq_object['claimedResidues'].append(claimed_residue)
+            seq_object['claimedResidues'].sort()
+            match_statements = descriptionMatchStatements[seq_no]
+            for statement in match_statements.keys():
+                seq_object['statements'].append(statement)
+            
             self.mentionedResidues.append(seq_object)
-        logger.info(self.mentionedResidues)
+
+        # logger.info(self.mentionedResidues)
 
 
 # TODO ADD THE MATCH SENTENCES
