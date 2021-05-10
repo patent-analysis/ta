@@ -23,6 +23,7 @@ mock_xml_document16 = os.path.join(os.path.dirname(os.path.abspath(__file__)), '
 mock_xml_document17 = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'mocks', 'US10023654B2.xml') 
 mock_xml_document18 = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'mocks', 'US20100166768A1.xml') 
 mock_xml_document19 = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'mocks', 'US20120195910A1.xml') 
+mock_xml_document20 = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'mocks', 'US10822424B2.xml') 
 
 
 def test_xml_parsing_1():
@@ -62,6 +63,7 @@ def test_claimed_residues_4():
     patent = Patent(mock_xml_document4,'US8563698B2')
     # TODO: update with expected residues...
     assert patent.mentionedResidues != []  
+    
 
 def test_claimed_residues_5():
     patent = Patent(mock_xml_document5,'US20090246192A1')
@@ -76,9 +78,10 @@ def test_claimed_residues_6():
     assert patent.inventors == patent.applicants
     assert patent.mentionedResidues != []
     assert len(patent.mentionedResidues) == 1
-    assert patent.mentionedResidues[0]['claimedResidues'] == ['153', '154', '155', '194', '195', '197', '237', '238','239','367', '369', '374', '375','376', '377','378','379','381']  
+    assert patent.mentionedResidues[0]['claimedResidues'] == ['153', '154', '155', '194', '195', '197', '237', '238','239','367', '369', '374', '375','376', '377','378','379', '381']  
     assert patent.mentionedResidues[0]['location'] == 'description'
     assert patent.mentionedResidues[0]['seqId'] == '53'
+
 
 def test_claimed_residues_7():
     patent = Patent(mock_xml_document7,'US8188234B2')
@@ -135,7 +138,7 @@ def test_claimed_residues_12():
     assert patent.inventors == patent.applicants
     assert patent.mentionedResidues != []
     assert len(patent.mentionedResidues) == 1
-    assert len(patent.mentionedResidues[0]['claimedResidues']) == 395
+    assert len(patent.mentionedResidues[0]['claimedResidues']) == 400
     assert patent.mentionedResidues[0]['location'] == 'description'
     assert patent.mentionedResidues[0]['seqId'] == '755'
 
@@ -145,7 +148,7 @@ def test_claimed_residues_13():
     assert patent.inventors == patent.applicants
     assert patent.mentionedResidues != []
     assert len(patent.mentionedResidues) == 1
-    assert len(patent.mentionedResidues[0]['claimedResidues']) == 395
+    assert len(patent.mentionedResidues[0]['claimedResidues']) == 400
     assert patent.mentionedResidues[0]['location'] == 'description'
     assert patent.mentionedResidues[0]['seqId'] == '755'
 
@@ -155,7 +158,7 @@ def test_claimed_residues_14():
     assert patent.inventors == patent.applicants
     assert patent.mentionedResidues != []
     assert len(patent.mentionedResidues) == 1
-    assert len(patent.mentionedResidues[0]['claimedResidues']) == 395
+    assert len(patent.mentionedResidues[0]['claimedResidues']) == 400
     assert patent.mentionedResidues[0]['location'] == 'description'
     assert patent.mentionedResidues[0]['seqId'] == '755'
 
@@ -165,7 +168,7 @@ def test_claimed_residues_15():
     assert patent.inventors == 'Mark W. Sleeman, Joel H. Martin, Tammy T. Huang, Douglas MacDonald'
     assert patent.mentionedResidues != []
     assert len(patent.mentionedResidues) == 1
-    assert len(patent.mentionedResidues[0]['claimedResidues']) == 395
+    assert len(patent.mentionedResidues[0]['claimedResidues']) == 400
     assert patent.mentionedResidues[0]['location'] == 'description'
     assert patent.mentionedResidues[0]['seqId'] == '755'
 
@@ -175,7 +178,7 @@ def test_claimed_residues_16():
     assert patent.inventors == 'Mark W. Sleeman, Joel H. Martin, Tammy T. Huang, Douglas MacDonald, Gary Swergold, Robert C. Pordy, William J. Sasiela'
     assert patent.mentionedResidues != []
     assert len(patent.mentionedResidues) == 1
-    assert len(patent.mentionedResidues[0]['claimedResidues']) == 395
+    assert len(patent.mentionedResidues[0]['claimedResidues']) == 400
     assert patent.mentionedResidues[0]['location'] == 'description'
     assert patent.mentionedResidues[0]['seqId'] == '755'
 
@@ -185,10 +188,9 @@ def test_claimed_residues_17():
     assert patent.inventors == 'Mark W. Sleeman, Joel H. Martin, Tammy T. Huang, Douglas MacDonald'
     assert patent.mentionedResidues != []
     assert len(patent.mentionedResidues) == 1
-    assert len(patent.mentionedResidues[0]['claimedResidues']) == 395
+    assert len(patent.mentionedResidues[0]['claimedResidues']) == 400
     assert patent.mentionedResidues[0]['location'] == 'description'
     assert patent.mentionedResidues[0]['seqId'] == '755'
-
 
 def test_claimed_residues_18():
     patent = Patent(mock_xml_document18,'US20100166768A1')
@@ -196,11 +198,10 @@ def test_claimed_residues_18():
     assert patent.inventors == 'Mark W. Sleeman, Joel H. Martin, Tammy T. Huang, Douglas MacDonald'
     assert patent.mentionedResidues != []
     assert len(patent.mentionedResidues) == 1
-    assert len(patent.mentionedResidues[0]['claimedResidues']) == 395
+    assert len(patent.mentionedResidues[0]['claimedResidues']) == 400
     assert patent.mentionedResidues[0]['location'] == 'description'
     assert patent.mentionedResidues[0]['seqId'] == '755'
 
-# @pytest.mark.slow
 def test_claimed_residues_19():
     patent = Patent(mock_xml_document19,'US20120195910A1')
     assert patent.applicants == 'YAN WU, CECILIA CHIU, DANIEL KIRCHHOFER, ANDREW PETERSON, GANESH KOLUMAM, MONICA KONG BELTRAN, PAUL MORAN, WEI LI'
@@ -208,3 +209,16 @@ def test_claimed_residues_19():
     assert patent.mentionedResidues == []
     # TODO: HARD PATENT
     #  (b) detecting formation of a complex between the anti-PCSK9 antibody and the PCSK9 protein., (i) at least one residue selected from the group consisting of R194 and E195 of human PCSK9,, (ii) at least one residue selected from the group consisting of D238 and A239 of human PCSK9,, (iii) at least one residue selected from the group consisting of A341 and Q342 of human PCSK9, and, (iv) at least one residue selected from the group consisting of E366, D367, I369, S376, T377, C378, F379, S381 and H391 of human PCSK9.
+
+def test_claimed_residues_20():
+    patent = Patent(mock_xml_document20,'US10822424B2')
+    assert patent.applicants == 'UNIVERSITÉ CATHOLIQUE DE LOUVAIN'
+    assert patent.inventors == 'Sophie Lucas, Stéphanie Lienart, Pierre Coulie'
+    assert patent.mentionedResidues != []
+    assert len(patent.mentionedResidues) == 4
+    assert len(patent.mentionedResidues[0]['claimedResidues']) == 14
+    assert patent.mentionedResidues[0]['location'] == 'claim'
+    assert patent.mentionedResidues[0]['seqId'] == '53'
+
+# @pytest.mark.slow
+# to run a specific test, use pytest -v -s --log-cli-level=INFO -m slow
