@@ -210,6 +210,7 @@ def test_claimed_residues_19():
     # TODO: HARD PATENT
     #  (b) detecting formation of a complex between the anti-PCSK9 antibody and the PCSK9 protein., (i) at least one residue selected from the group consisting of R194 and E195 of human PCSK9,, (ii) at least one residue selected from the group consisting of D238 and A239 of human PCSK9,, (iii) at least one residue selected from the group consisting of A341 and Q342 of human PCSK9, and, (iv) at least one residue selected from the group consisting of E366, D367, I369, S376, T377, C378, F379, S381 and H391 of human PCSK9.
 
+@pytest.mark.slow
 def test_claimed_residues_20():
     patent = Patent(mock_xml_document20,'US10822424B2')
     assert patent.applicants == 'UNIVERSITÉ CATHOLIQUE DE LOUVAIN'

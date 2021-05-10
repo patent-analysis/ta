@@ -43,7 +43,8 @@ def find_names(tree, parent):
             continue
         full_name = first.text + ' ' + last.text
         res.append(full_name)
-    return ', '.join(res)   
+    full_list = ', '.join(res)
+    return full_list
 
 
 class Patent:
