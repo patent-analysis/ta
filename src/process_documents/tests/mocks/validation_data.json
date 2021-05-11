@@ -25,11 +25,38 @@
     },
     {
         "patentNumber": "US8563698B2",
-        "mentionedResidues": ["123", "124", "125", "126", "127", "128", "129", "130", "131", "132"]
+        "mentionedResidues": [
+            "123",
+            "124",
+            "125",
+            "126",
+            "127",
+            "128",
+            "129",
+            "130",
+            "131",
+            "132"
+        ]
     },
     {
         "patentNumber": "US8829165B2",
-        "mentionedResidues": ["153", "154", "155", "194", "238", "239", "369", "372", "374", "375", "377", "378", "379", "380", "381"]
+        "mentionedResidues": [
+            "153",
+            "154",
+            "155",
+            "194",
+            "238",
+            "239",
+            "369",
+            "372",
+            "374",
+            "375",
+            "377",
+            "378",
+            "379",
+            "380",
+            "381"
+        ]
     },
     {
         "patentNumber": "US8889144B2",
@@ -50,16 +77,62 @@
     },
     {
         "patentNumber": "US10023654B2",
-        "mentionedResidues": ["238"]
+        "mentionedResidues": [
+            "238"
+        ]
     },
     {
         "patentNumber": "US10787484B2",
         "patentName": "Compositions and methods for treating cardiovascular disease",
-        "mentionedResidues": ["241", "339", "343", "364", "442", "443", "444"]
+        "mentionedResidues": [
+            "241",
+            "339",
+            "343",
+            "364",
+            "442",
+            "443",
+            "444"
+        ]
     },
     {
         "patentNumber": "US10822424B2",
-        "mentionedResidues": ["58", "100", "113", "114", "116", "117", "118", "119", "137", "138", "139", "140", "142", "143", "144", "145", "146", "162", "163", "165", "166", "167", "170", "189", "269", "270", "271", "272", "273", "284", "336", "337", "338", "341", "345"]
+        "mentionedResidues": [
+            "58",
+            "100",
+            "113",
+            "114",
+            "116",
+            "117",
+            "118",
+            "119",
+            "137",
+            "138",
+            "139",
+            "140",
+            "142",
+            "143",
+            "144",
+            "145",
+            "146",
+            "162",
+            "163",
+            "165",
+            "166",
+            "167",
+            "170",
+            "189",
+            "269",
+            "270",
+            "271",
+            "272",
+            "273",
+            "284",
+            "336",
+            "337",
+            "338",
+            "341",
+            "345"
+        ]
     },
     {
         "patentNumber": "US20090246192A1",
@@ -71,6 +144,151 @@
     },
     {
         "patentNumber": "US8828405B2",
+        "mentionedResidues": []
+    },
+    {
+        "patentNumber": "US8337844B2",
+        "patentName": "CD20-binding polypeptide compositions for treating autoimmune disease",
+        "patentAssignees": "Merck Patent GmbH",
+        "inventors": "Francis Joseph Carr, Stephen Williams, Stephen D. Gillies",
+        "mentionedResidues": [
+            "11",
+            "12",
+            "14",
+            "20",
+            "27",
+            "29",
+            "40",
+            "48",
+            "59",
+            "68",
+            "69",
+            "72",
+            "76",
+            "77",
+            "82",
+            "87",
+            "91",
+            "93",
+            "106",
+            "114"
+        ]
+    },
+    {
+        "patentNumber": "US20060019899A1",
+        "mentionedResidues": []
+    },
+    {
+        "patentNumber": "US7531174B2",
+        "mentionedResidues": ["46", "47", "48", "49", "50", "51", "52", "53", "54", "55", "56", "57", "58", "59", "60", "61", "62", "114", "115", "116", "117", "118", "119", "120", "121", "122", "123", "124", "125", "126", "127", "128", "129", "130", "131", "132", "133", "134", "135", "136", "137", "138", "139", "140", "141", "142", "143", "144", "145", "146", "147", "148", "149", "150"
+        ]
+    },
+    {
+        "patentNumber": "US20200181280A1",
+        "mentionedResidues": []
+    },
+    {
+        "patentNumber": "US20170240631A1",
+        "mentionedResidues": []
+    },
+    {
+        "patentNumber": "US20180037645A1",
+        "mentionedResidues": ["33", "34", "35", "36", "37", "38", "39", "40", "41", "42", "43", "44", "45", "46", "47", "48", "49", "50", "51", "52", "53", "54", "55", "56", "57", "58", "89", "90", "91", "92", "93", "94", "95", "96", "97", "98", "99", "100", "101", "102", "103", "104", "105", "106", "107", "108", "109", "110", "111", "112", "113", "114", "115", "116", "117", "118", "119", "120", "121", "122", "123", "124"]
+    },
+    {
+        "patentNumber": "US9334318B1",
+        "mentionedResidues": []
+    },
+    {
+        "patentNumber": "US20190330329A1",
+        "mentionedResidues": []
+    },
+    {
+        "patentNumber": "US20160368989A1",
+        "mentionedResidues": []
+    },
+    {
+        "patentNumber": "US20190127486A1",
+        "mentionedResidues": []
+    },
+    {
+        "patentNumber": "US20180112001A1",
+        "mentionedResidues": []
+    },
+    {
+        "patentNumber": "US20180208661A1",
+        "mentionedResidues": []
+    },
+    {
+        "patentNumber": "US20170081409A1",
+        "mentionedResidues": []
+    },
+    {
+        "patentNumber": "US8071097B2",
+        "mentionedResidues": []
+    },
+    {
+        "patentNumber": "US20170210808A1",
+        "mentionedResidues": []
+    },
+    {
+        "patentNumber": "US20190062429A1",
+        "mentionedResidues": []
+    },
+    {
+        "patentNumber": "US20170355781A1",
+        "mentionedResidues": []
+    },
+    {
+        "patentNumber": "US20210054073A1",
+        "mentionedResidues": []
+    },
+    {
+        "patentNumber": "US20190040135A1",
+        "mentionedResidues": []
+    },
+    {
+        "patentNumber": "US20160347847A1",
+        "mentionedResidues": []
+    },
+    {
+        "patentNumber": "US7674599B2",
+        "mentionedResidues": []
+    },
+    {
+        "patentNumber": "US20140301946A1",
+        "mentionedResidues": []
+    },
+    {
+        "patentNumber": "US10927173B2",
+        "mentionedResidues": []
+    },
+    {
+        "patentNumber": "US20160176963A1",
+        "mentionedResidues": []
+    },
+    {
+        "patentNumber": "US10357571B2",
+        "mentionedResidues": []
+    },
+    {
+        "patentNumber": "US20160046675A1",
+        "mentionedResidues": []
+    },
+    {
+        "patentNumber": "US20160355589A1",
+        "mentionedResidues": []
+    },
+    {
+        "patentNumber": "US9968687B2",
+        "mentionedResidues": []
+    },
+    {
+        "patentNumber": "US20210024626A1",
+        "mentionedResidues": []
+    },
+    {
+        "patentNumber": "US9790269B2",
         "mentionedResidues": []
     }
 ]
