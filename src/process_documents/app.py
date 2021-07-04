@@ -113,8 +113,8 @@ def get_sequences_list(patent, seq_listing):
 
 def persist_doc_records(patent, seq_listing, protein_name, object_key):
     # TODO: FIX THE TABLE NAMES
-    patents_table = dynamodb.Table('patents-dev')
-    biomolecules_table = dynamodb.Table('bioMolecules-dev')
+    patents_table = dynamodb.Table('patents-production')
+    biomolecules_table = dynamodb.Table('bioMolecules-production')
     # Extract patent data from the response and persist to patents_table
     # TODO: Add the claimed seq id nos and the actual sequences to this object
     # TODO: fix the text font!
